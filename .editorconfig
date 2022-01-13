@@ -5,12 +5,10 @@ indent_style = space
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+end_of_line = lf
 
 [*.{js, jsx, ts, tsx, json, styl, html, ejs}]
 indent_size = 2
-
-[*.sh]
-end_of_line = lf
 
 [*.md]
 trim_trailing_whitespace = false

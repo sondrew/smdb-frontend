@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
+
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { Button, SimpleGrid } from '@chakra-ui/react';
+
 import { DiscoverMovies } from '../State/Atoms';
 import { getDiscoverMovies } from '../State/DataFetch';
 import { TMDbMovie } from '../Models/BackendModels';
+import MovieGridElement from './MovieGridElement';
 
 const Dashboard: React.FC = () => {
   const [discoverMovies, setDiscoverMovies] =
@@ -22,13 +26,18 @@ const Dashboard: React.FC = () => {
 
   return (
     <div style={{ marginTop: '4rem' }}>
-      <button onClick={getMovies}>Get movies</button>
-      {discoverMovies.length > 0 &&
-        discoverMovies.map((movie) => (
-          <div>
-            <span>{movie.title}</span>
-          </div>
-        ))}
+      <Button color="grey" mb={20} onClick={getMovies}>
+        Get movies
+      </Button>
+      <SimpleGrid
+        m={3}
+        columns={{ sm: 2, md: 3, lg: 6, xl: 8, '2xl': 10 }}
+        spacingX={4}
+        spacingY={6}
+      >
+        {discoverMovies.length > 0 &&
+          discoverMovies.map((movie) => <MovieGridElement movie={movie} />)}
+      </SimpleGrid>
     </div>
   );
 };
