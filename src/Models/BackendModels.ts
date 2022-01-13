@@ -5,6 +5,6 @@ export interface TMDbMovie {
   voteCount: number;
   popularity: number;
   overview: string;
-  posterPath: string;
+  posterUrl: string;
   releaseDate: string;
 }
