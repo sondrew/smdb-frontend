@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TMDbMovie } from '../Models/BackendModels';
-import { Badge, Box, Image, Text } from '@chakra-ui/react';
+import { Box, Image } from '@chakra-ui/react';
 import Star from './Star';
 import RatingBadge from './RatingBadge';
 

@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react';
 
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { Button, SimpleGrid } from '@chakra-ui/react';
 
 import { DiscoverMovies } from '../State/Atoms';
-import { getDiscoverMovies } from '../State/DataFetch';
+import {
+  getDiscoverMovies,
+  getFavouriteMovies,
+  saveMovie,
+  unsaveMovie,
+} from '../State/DataFetch';
 import { TMDbMovie } from '../Models/BackendModels';
 import MovieGridElement from './MovieGridElement';
 
@@ -23,10 +28,12 @@ const Dashboard: React.FC = () => {
   }, [discoverMovies.length, setDiscoverMovies]);
 
   const toggleFavouriteMovie = (index: number) => {
+    let movieBeforeToggling = discoverMovies[index];
+
     setDiscoverMovies((prevState) => {
       let toggledMovie = {
-        ...prevState[index],
-        markedFavourite: !prevState[index].markedFavourite,
+        ...movieBeforeToggling,
+        markedFavourite: !movieBeforeToggling.markedFavourite,
       };
 
       return [
@@ -35,12 +42,28 @@ const Dashboard: React.FC = () => {
         ...prevState.slice(index + 1),
       ] as TMDbMovie[];
     });
+
+    if (!movieBeforeToggling.markedFavourite) saveMovie(movieBeforeToggling.id);
+    else unsaveMovie(movieBeforeToggling.id);
+  };
+
+  const retrieveFavouriteMovies = async () => {
+    await getFavouriteMovies()
+      .then((f) => {
+        console.log({ f });
+      })
+      .catch((e) => {
+        console.log({ e });
+      });
   };
 
   // toggle favourite state here or dispach/reduce in child
 
   return (
     <div style={{ marginTop: '4rem' }}>
+      <Button color="black" ml={4} mb={20} onClick={retrieveFavouriteMovies}>
+        Get favourites
+      </Button>
       <SimpleGrid
         m={3}
         columns={{ sm: 2, md: 3, lg: 6, xl: 8, '2xl': 10 }}

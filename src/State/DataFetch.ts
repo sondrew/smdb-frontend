@@ -2,10 +2,17 @@ import { TMDbMovie } from '../Models/BackendModels';
 
 const apiBaseUrl = 'http://localhost:8080';
 
-export const getFavouriteMovies = () => fetchJson(apiBaseUrl + '/favourite');
+export const getFavouriteMovies = (): Promise<TMDbMovie[]> =>
+  fetchJson(apiBaseUrl + '/favourites');
 
 export const getDiscoverMovies = (): Promise<TMDbMovie[]> =>
   fetchJson(apiBaseUrl + '/discover');
+
+export const saveMovie = (externalId: number) =>
+  fetchJson(apiBaseUrl + '/save/' + externalId);
+
+export const unsaveMovie = (externalId: number) =>
+  fetchJson(apiBaseUrl + '/unsave/' + externalId);
 
 export const fetchJson = (
   url: string,
