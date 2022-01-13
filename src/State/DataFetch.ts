@@ -4,7 +4,7 @@ const apiBaseUrl = 'http://localhost:8080';
 
 export const getFavouriteMovies = () => fetchJson(apiBaseUrl + '/favourite');
 
-export const getDiscoverMovies = (): Promise<Array<TMDbMovie>> =>
+export const getDiscoverMovies = (): Promise<TMDbMovie[]> =>
   fetchJson(apiBaseUrl + '/discover');
 
 export const fetchJson = (

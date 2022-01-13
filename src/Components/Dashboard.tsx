@@ -10,7 +10,7 @@ import MovieGridElement from './MovieGridElement';
 
 const Dashboard: React.FC = () => {
   const [discoverMovies, setDiscoverMovies] =
-    useRecoilState<Array<TMDbMovie>>(DiscoverMovies);
+    useRecoilState<TMDbMovie[]>(DiscoverMovies);
 
   useEffect(() => {
     if (discoverMovies.length === 0) {
@@ -22,7 +22,22 @@ const Dashboard: React.FC = () => {
     }
   }, [discoverMovies.length, setDiscoverMovies]);
 
-  console.log({ discoverMovies });
+  const toggleFavouriteMovie = (index: number) => {
+    setDiscoverMovies((prevState) => {
+      let toggledMovie = {
+        ...prevState[index],
+        markedFavourite: !prevState[index].markedFavourite,
+      };
+
+      return [
+        ...prevState.slice(0, index),
+        toggledMovie,
+        ...prevState.slice(index + 1),
+      ] as TMDbMovie[];
+    });
+  };
+
+  // toggle favourite state here or dispach/reduce in child
 
   return (
     <div style={{ marginTop: '4rem' }}>
@@ -33,8 +48,13 @@ const Dashboard: React.FC = () => {
         spacingY={6}
       >
         {discoverMovies.length > 0 &&
-          discoverMovies.map((movie) => (
-            <MovieGridElement key={movie.id} movie={movie} />
+          discoverMovies.map((movie, index) => (
+            <MovieGridElement
+              key={movie.id}
+              movie={movie}
+              index={index}
+              toggleFavourite={toggleFavouriteMovie}
+            />
           ))}
       </SimpleGrid>
     </div>

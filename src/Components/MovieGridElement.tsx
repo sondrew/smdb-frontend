@@ -3,26 +3,30 @@ import React from 'react';
 import { TMDbMovie } from '../Models/BackendModels';
 import { Badge, Box, Image, Text } from '@chakra-ui/react';
 import Star from './Star';
+import RatingBadge from './RatingBadge';
 
 interface MovieGridElementProps {
   movie: TMDbMovie;
+  index: number;
+  toggleFavourite: (index: number) => void;
 }
 
-const MovieGridElement: React.FC<MovieGridElementProps> = ({ movie }) => {
+const MovieGridElement: React.FC<MovieGridElementProps> = ({
+  movie,
+  toggleFavourite,
+  index,
+}) => {
   const fallbackPosterUrl: string =
     'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
-
-  const calculateRatingColor = (rating: number) =>
-    `hsla(${rating * 10}, 95%, 63%, 0.9)`;
 
   return (
     <Box
       borderRadius="md"
       border="solid"
-      borderColor="white"
+      borderColor={movie.markedFavourite ? 'blue.300' : 'blue.600'}
       borderWidth={1}
       overflow="hidden"
-      backgroundColor="grey"
+      backgroundColor={movie.markedFavourite ? 'blue.400' : 'blue.700'}
     >
       <Image
         objectFit="fill"
@@ -36,22 +40,11 @@ const MovieGridElement: React.FC<MovieGridElementProps> = ({ movie }) => {
         justifyContent="space-between"
         p={1}
       >
-        <Box display="flex" alignItems="center">
-          <Badge
-            borderRadius="full"
-            px="2"
-            py={1}
-            color="white"
-            backgroundColor={calculateRatingColor(movie.voteAverage)}
-            textShadow="0 0 3px black"
-          >
-            {movie.voteAverage}
-          </Badge>
-          <Text pl={2} fontSize="xs">
-            {movie.voteCount} votes
-          </Text>
-        </Box>
-        <Star favourite={true} />
+        <RatingBadge rating={movie.voteAverage} voteCount={movie.voteCount} />
+        <Star
+          favourite={movie.markedFavourite}
+          toggleFavourite={() => toggleFavourite(index)}
+        />
       </Box>
       <Box textAlign="center" letterSpacing="wide" p={2}>
         {movie.title}

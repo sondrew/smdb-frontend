@@ -7,4 +7,5 @@ export interface TMDbMovie {
   overview: string;
   posterUrl: string;
   releaseDate: string;
+  markedFavourite: boolean;
 }
