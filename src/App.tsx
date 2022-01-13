@@ -1,11 +1,17 @@
 import React from 'react';
+import { RecoilRoot } from 'recoil';
+
+import Dashboard from './Components/Dashboard';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header>Sondre's Movie Database</header>
-    </div>
+    <RecoilRoot>
+      <div className="App">
+        <header>Sondre's Movie Database</header>
+        <Dashboard />
+      </div>
+    </RecoilRoot>
   );
 }
 
