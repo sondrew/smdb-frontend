@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { RecoilRoot } from 'recoil';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Heading } from '@chakra-ui/react';
 
 import Dashboard from './Components/Dashboard';
 import './App.css';
@@ -11,7 +11,9 @@ function App() {
     <RecoilRoot>
       <ChakraProvider>
         <div className="App">
-          <header>Sondre's Movie Database</header>
+          <Heading as="h1" textAlign="center" size="lg" pt={3}>
+            Sondre's Movie Database
+          </Heading>
           <Dashboard />
         </div>
       </ChakraProvider>

@@ -1,8 +1,16 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
+
 .App {
-  text-align: center;
-  background-color: #282c34;
-  min-height: 100vh;
-  color: white;
+    background-color: #282c34;
+    padding-bottom: 15px;
+    color: white;
+    margin: 0;
 }
 
 .App header {

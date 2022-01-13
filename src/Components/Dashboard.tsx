@@ -12,7 +12,7 @@ const Dashboard: React.FC = () => {
   const [discoverMovies, setDiscoverMovies] =
     useRecoilState<Array<TMDbMovie>>(DiscoverMovies);
 
-  const getMovies = () => {
+  useEffect(() => {
     if (discoverMovies.length === 0) {
       getDiscoverMovies()
         .then((data) => setDiscoverMovies(data))
@@ -20,15 +20,12 @@ const Dashboard: React.FC = () => {
           console.log(e);
         });
     }
-  };
+  }, [discoverMovies.length, setDiscoverMovies]);
 
   console.log({ discoverMovies });
 
   return (
     <div style={{ marginTop: '4rem' }}>
-      <Button color="grey" mb={20} onClick={getMovies}>
-        Get movies
-      </Button>
       <SimpleGrid
         m={3}
         columns={{ sm: 2, md: 3, lg: 6, xl: 8, '2xl': 10 }}
@@ -36,7 +33,9 @@ const Dashboard: React.FC = () => {
         spacingY={6}
       >
         {discoverMovies.length > 0 &&
-          discoverMovies.map((movie) => <MovieGridElement movie={movie} />)}
+          discoverMovies.map((movie) => (
+            <MovieGridElement key={movie.id} movie={movie} />
+          ))}
       </SimpleGrid>
     </div>
   );
