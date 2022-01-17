@@ -14,6 +14,9 @@ export const saveMovie = (externalId: number) =>
 export const unsaveMovie = (externalId: number) =>
   fetchJson(apiBaseUrl + '/unsave/' + externalId);
 
+export const searchMovieAndTV = (searchQuery: string) =>
+  fetchJson(apiBaseUrl + '/search/' + encodeURI(searchQuery));
+
 export const fetchJson = (
   url: string,
   method: string = 'GET',
