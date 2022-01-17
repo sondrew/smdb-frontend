@@ -6,6 +6,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter } from 'react-router-dom';
 
 import Dashboard from './Components/Dashboard';
+import WelcomePage from './Components/WelcomePage';
 import './App.css';
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
           <div className="App">
             <Routes>
               <Route path="/favourites" element={<Dashboard />} />
-              <Route path="/" element={<span>Main page</span>} />
+              <Route path="/" element={<WelcomePage />} />
             </Routes>
           </div>
         </ChakraProvider>
