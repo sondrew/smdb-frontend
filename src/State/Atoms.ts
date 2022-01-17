@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { TMDbMovie } from '../Models/BackendModels';
+import { SearchItem, TMDbMovie } from '../Models/BackendModels';
 
 export const SavedMovies = atom({
   key: 'savedMovies',
@@ -9,6 +9,11 @@ export const SavedMovies = atom({
 export const DiscoverMovies = atom({
   key: 'discoverMovies',
   default: [] as TMDbMovie[],
+});
+
+export const RecommendationList = atom({
+  key: 'recommendationList',
+  default: [] as SearchItem[],
 });
 
 /*

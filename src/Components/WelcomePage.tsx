@@ -1,4 +1,11 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  LegacyRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
 import {
   Box,
   Center,
@@ -13,18 +20,39 @@ import {
 import useDebounce from '../Hooks/useDebounce';
 import { SearchItem } from '../Models/BackendModels';
 import { searchMovieAndTV } from '../State/DataFetch';
+import { useRecoilState } from 'recoil';
+import { RecommendationList } from '../State/Atoms';
 
 const WelcomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchItem[]>([]);
-  const debouncedSearchQuery = useDebounce<string>(searchQuery, 500);
+  const inputSearchRef = useRef<HTMLInputElement>(null);
+
+  const [recommendationList, setRecommendationList] =
+    useRecoilState<SearchItem[]>(RecommendationList);
+
+  const debouncedSearchQuery = useDebounce<string>(searchQuery, 300);
 
   const fallbackPosterUrl: string =
     'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
 
   useEffect(() => {
-    searchMovieAndTV(debouncedSearchQuery).then((res) => setSearchResult(res));
+    if (debouncedSearchQuery.length >= 2) {
+      searchMovieAndTV(debouncedSearchQuery).then((res) =>
+        setSearchResult(res)
+      );
+    } else {
+      setSearchResult([]);
+    }
   }, [debouncedSearchQuery]);
+
+  const addItemToRecommendationList = (item: SearchItem) => {
+    setRecommendationList((prevState) => [...prevState, item]);
+    // check movie/show doesn't extist in list already?
+    setSearchResult([]);
+    setSearchQuery('');
+    inputSearchRef?.current?.focus();
+  };
 
   return (
     <Box>
@@ -32,7 +60,7 @@ const WelcomePage: React.FC = () => {
         Create recommendations!
       </Heading>
 
-      <Flex mt={40} justifyContent="center">
+      <Flex mt={20} justifyContent="center">
         <Box
           w={{
             zero: '95%',
@@ -45,6 +73,20 @@ const WelcomePage: React.FC = () => {
             xxl: '16%',
           }}
         >
+          <Box my={10}>
+            {recommendationList.length > 0 && (
+              <>
+                <Heading as="h5" size="sm">
+                  Recommendations added:
+                </Heading>
+                <ol>
+                  {recommendationList.map((listItem) => (
+                    <li key={listItem.id}>{listItem.title}</li>
+                  ))}
+                </ol>
+              </>
+            )}
+          </Box>
           <Input
             onChange={(event) => setSearchQuery(event.target.value)}
             pl={5}
@@ -54,10 +96,12 @@ const WelcomePage: React.FC = () => {
             size="lg"
             placeholder="Search movie/show"
             mb={5}
+            ref={inputSearchRef}
           />
           {searchResult.length > 0 &&
             searchResult.map((item) => (
               <Box
+                onClick={() => addItemToRecommendationList(item)}
                 border="1px"
                 borderColor="grey"
                 display="flex"
@@ -77,7 +121,10 @@ const WelcomePage: React.FC = () => {
                   fallbackSrc={fallbackPosterUrl}
                 />
                 <Text fontSize="lg" as="h6" pl={3}>
-                  {item.title} {/*Year*/}
+                  {item.title}
+                </Text>
+                <Text color="lightgray" pl={2}>
+                  ({item.releaseDate.substring(0, 4)})
                 </Text>
               </Box>
             ))}
