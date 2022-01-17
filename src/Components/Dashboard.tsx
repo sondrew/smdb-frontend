@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { useRecoilState } from 'recoil';
-import { Button, SimpleGrid } from '@chakra-ui/react';
+import { Button, Heading, SimpleGrid } from '@chakra-ui/react';
 
 import { DiscoverMovies } from '../State/Atoms';
 import {
@@ -60,27 +60,32 @@ const Dashboard: React.FC = () => {
   // toggle favourite state here or dispach/reduce in child
 
   return (
-    <div style={{ marginTop: '4rem' }}>
-      <Button color="black" ml={4} mb={20} onClick={retrieveFavouriteMovies}>
-        Get favourites
-      </Button>
-      <SimpleGrid
-        m={3}
-        columns={{ sm: 2, md: 3, lg: 6, xl: 8, '2xl': 10 }}
-        spacingX={4}
-        spacingY={6}
-      >
-        {discoverMovies.length > 0 &&
-          discoverMovies.map((movie, index) => (
-            <MovieGridElement
-              key={movie.id}
-              movie={movie}
-              index={index}
-              toggleFavourite={toggleFavouriteMovie}
-            />
-          ))}
-      </SimpleGrid>
-    </div>
+    <>
+      <Heading as="h1" textAlign="center" size="lg" pt={3}>
+        Sondre's Movie Database
+      </Heading>
+      <div style={{ marginTop: '4rem' }}>
+        <Button color="black" ml={4} mb={20} onClick={retrieveFavouriteMovies}>
+          Get favourites
+        </Button>
+        <SimpleGrid
+          m={3}
+          columns={{ sm: 2, md: 3, lg: 6, xl: 8, '2xl': 10 }}
+          spacingX={4}
+          spacingY={6}
+        >
+          {discoverMovies.length > 0 &&
+            discoverMovies.map((movie, index) => (
+              <MovieGridElement
+                key={movie.id}
+                movie={movie}
+                index={index}
+                toggleFavourite={toggleFavouriteMovie}
+              />
+            ))}
+        </SimpleGrid>
+      </div>
+    </>
   );
 };
 
