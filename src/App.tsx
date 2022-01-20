@@ -9,6 +9,7 @@ import Dashboard from './Components/Dashboard';
 import WelcomePage from './Components/WelcomePage';
 import './App.css';
 import customTheme from './customTheme';
+import ListEditor from './Components/ListEditor';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Routes>
               <Route path="/favourites" element={<Dashboard />} />
               <Route path="/" element={<WelcomePage />} />
+              <Route path="/edit" element={<ListEditor />} />
             </Routes>
           </div>
         </ChakraProvider>
