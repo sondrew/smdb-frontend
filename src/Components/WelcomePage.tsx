@@ -129,13 +129,39 @@ const WelcomePage: React.FC = () => {
                 />
                 <Text fontSize="lg" as="h6" pl={3}>
                   {item.title}
+                  <Text display="inline-flex" color="lightgray" pl={2}>
+                    ({item.releaseDate.substring(0, 4)})
+                  </Text>
                 </Text>
-                <Text color="lightgray" pl={2}>
-                  ({item.releaseDate.substring(0, 4)})
-                </Text>
+                <Badge
+                  alignSelf="flex-start"
+                  marginLeft="auto"
+                  borderRadius="full"
+                  px="2"
+                  py={1}
+                  color="white"
+                  backgroundColor={
+                    item.mediaType.toString() === 'tv' ? 'green' : 'red'
+                  }
+                  textShadow="0 0 3px black"
+                >
+                  {item.mediaType.toString().toUpperCase()}
+                </Badge>
               </Box>
             ))}
         </Box>
+      </Flex>
+      <Flex justifyContent="flex-end">
+        <Link to={'/edit'}>
+          <Button
+            size="md"
+            m={3}
+            backgroundColor={'green.400'}
+            _hover={{ backgroundColor: 'green.200' }}
+          >
+            Next
+          </Button>
+        </Link>
       </Flex>
     </Box>
   );
