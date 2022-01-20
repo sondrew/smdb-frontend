@@ -1,58 +1,58 @@
-import React, {
-  ChangeEvent,
-  LegacyRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
+  Badge,
   Box,
-  Center,
+  Button,
   Flex,
-  GridItem,
   Heading,
   Image,
   Input,
   Text,
-  SimpleGrid,
 } from '@chakra-ui/react';
 import useDebounce from '../Hooks/useDebounce';
 import { SearchItem } from '../Models/BackendModels';
 import { searchMovieAndTV } from '../State/DataFetch';
 import { useRecoilState } from 'recoil';
 import { RecommendationList } from '../State/Atoms';
+import { Link } from 'react-router-dom';
 
 const WelcomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchItem[]>([]);
   const inputSearchRef = useRef<HTMLInputElement>(null);
+  const [searchFailed, setSearchFailed] = useState<boolean>(false);
 
   const [recommendationList, setRecommendationList] =
     useRecoilState<SearchItem[]>(RecommendationList);
 
-  const debouncedSearchQuery = useDebounce<string>(searchQuery, 300);
+  const debouncedSearchQuery = useDebounce<string>(searchQuery, 200);
 
   const fallbackPosterUrl: string =
     'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
 
   useEffect(() => {
+    setSearchFailed(false);
     if (debouncedSearchQuery.length >= 2) {
-      searchMovieAndTV(debouncedSearchQuery).then((res) =>
-        setSearchResult(res)
-      );
+      searchMovieAndTV(debouncedSearchQuery)
+        .then((res) => setSearchResult(res))
+        .catch((e) => setSearchFailed(true));
     } else {
       setSearchResult([]);
     }
   }, [debouncedSearchQuery]);
 
+  // https://ipapi.co/json/ get client country to get streaming providers for lists
+
   const addItemToRecommendationList = (item: SearchItem) => {
     setRecommendationList((prevState) => [...prevState, item]);
-    // check movie/show doesn't extist in list already?
+    // check movie/show doesn't exist in list already?
     setSearchResult([]);
     setSearchQuery('');
     inputSearchRef?.current?.focus();
   };
+
+  // handle search with no results
 
   return (
     <Box>
@@ -98,6 +98,13 @@ const WelcomePage: React.FC = () => {
             mb={5}
             ref={inputSearchRef}
           />
+          {searchFailed && (
+            <Box display="flex" justifyContent="center" mt={10}>
+              <Heading as="h2" size="md" color={'red.300'}>
+                Search failed, pls try again later
+              </Heading>
+            </Box>
+          )}
           {searchResult.length > 0 &&
             searchResult.map((item) => (
               <Box
