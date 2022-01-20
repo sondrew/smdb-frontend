@@ -18,12 +18,12 @@ export interface SearchItem {
   voteCount: number;
   popularity: number;
   overview: string;
-  posterUrl: string;
+  posterUrl?: string;
   releaseDate: string;
   originalTitle: string;
 }
 
-enum MediaType {
+export enum MediaType {
   movie,
   tv,
 }

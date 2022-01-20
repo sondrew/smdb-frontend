@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { SearchItem } from '../Models/BackendModels';
+import { MediaType, SearchItem } from '../Models/BackendModels';
 import { RecommendationList } from '../State/Atoms';
 import {
   Badge,
   Box,
   Container,
+  Flex,
   Heading,
   Image,
   Input,
@@ -20,26 +21,57 @@ import {
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
+import { RecommendedItem } from '../Models/FrontendModels';
 
 const ListEditor: React.FC = () => {
   const [listName, setListName] = useState<string>('');
   const [listDescription, setListDescription] = useState<string>('');
 
-  const [recommendationList, setRecommendationList] =
-    useRecoilState<SearchItem[]>(RecommendationList);
+  const [recommendationList] = useRecoilState<SearchItem[]>(RecommendationList);
 
-  const [editedList, setEditedList] =
-    useState<SearchItem[]>(recommendationList);
+  const [editedList, setEditedList] = useState<RecommendedItem[]>([]);
+
+  const fallbackPosterUrl: string =
+    'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
+
+  useEffect(() => {
+    const editorList: RecommendedItem[] = recommendationList.map((item) => ({
+      id: item.id,
+      title: item.title,
+      mediaType: item.mediaType,
+      releaseDate: item.releaseDate,
+      posterUrl: item.posterUrl ?? '',
+      userComment: '',
+      userRating: null,
+    }));
+
+    setEditedList(editorList);
+  }, []);
 
   const handleOnDragEnd = (result: DropResult) => {
     const { destination, source } = result;
     if (!!destination && !!source) {
-      const newSort = [...editedList];
-      const element = newSort[result.source.index];
-      newSort.splice(source.index, 1);
-      newSort.splice(destination.index, 0, element);
-      setEditedList(newSort);
+      const newList = [...editedList];
+      const moveElement = newList[result.source.index];
+      newList.splice(source.index, 1);
+      newList.splice(destination.index, 0, moveElement);
+      setEditedList(newList);
     }
+  };
+
+  const setMediaItemComment = (index: number, comment: string) => {
+    setEditedList((prevState) => {
+      const updatedItem = {
+        ...prevState[index],
+        userComment: comment,
+      };
+
+      return [
+        ...prevState.slice(0, index),
+        updatedItem,
+        ...prevState.slice(index + 1),
+      ];
+    });
   };
 
   return (
@@ -82,10 +114,10 @@ const ListEditor: React.FC = () => {
             <Droppable droppableId="mediaItem">
               {(provided) => (
                 <List {...provided.droppableProps} ref={provided.innerRef}>
-                  {editedList.map((mediaItem, index) => (
+                  {editedList.map((mediaItem, mediaItemIndex) => (
                     <Draggable
                       draggableId={mediaItem.id.toString()}
-                      index={index}
+                      index={mediaItemIndex}
                       key={mediaItem.id}
                     >
                       {(providedItem) => (
@@ -113,18 +145,36 @@ const ListEditor: React.FC = () => {
                               maxH={100}
                               src={mediaItem.posterUrl}
                               alt={`Poster of movie ${mediaItem.title}`}
-                              // fallbackSrc={fallbackPoster}
+                              fallbackSrc={fallbackPosterUrl}
                             />
-                            <Text fontSize="lg" as="h6" pl={3}>
-                              {mediaItem.title}
-                              <Text
-                                display="inline-flex"
-                                color="lightgray"
-                                pl={2}
-                              >
-                                ({mediaItem.releaseDate.substring(0, 4)})
+                            <Flex flexDirection="column">
+                              <Text fontSize="lg" as="h6" pl={3}>
+                                {mediaItem.title}
+                                <Text
+                                  display="inline-flex"
+                                  color="lightgray"
+                                  pl={2}
+                                >
+                                  ({mediaItem.releaseDate.substring(0, 4)})
+                                </Text>
                               </Text>
-                            </Text>
+                              <Input
+                                onChange={(event) =>
+                                  setMediaItemComment(
+                                    mediaItemIndex,
+                                    event.target.value
+                                  )
+                                }
+                                pl={1}
+                                ml={2}
+                                value={mediaItem.userComment}
+                                fontSize="sm"
+                                variant="flushed"
+                                size="md"
+                                placeholder="Comment (optional)"
+                                mb={5}
+                              />
+                            </Flex>
                             <Badge
                               alignSelf="flex-start"
                               marginLeft="auto"
