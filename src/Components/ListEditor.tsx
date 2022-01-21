@@ -139,6 +139,15 @@ const ListEditor: React.FC = () => {
                             p={1}
                             maxH={80}
                           >
+                            <Flex
+                              w={10}
+                              flexDirection="column"
+                              alignItems="center"
+                            >
+                              <Text fontSize="md">▲</Text>
+                              <Text fontSize="xl">{mediaItemIndex + 1}</Text>
+                              <Text fontSize="md">▼</Text>
+                            </Flex>
                             <Image
                               objectFit={'fill'}
                               maxW={60}
