@@ -14,18 +14,16 @@ import useDebounce from '../Hooks/useDebounce';
 import { SearchItem } from '../Models/BackendModels';
 import { searchMovieAndTV } from '../State/DataFetch';
 import { useRecoilState } from 'recoil';
-import { RecommendationList } from '../State/Atoms';
+import { SearchList } from '../State/Atoms';
 import { Link } from 'react-router-dom';
 
 const WelcomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchItem[]>([]);
-  const inputSearchRef = useRef<HTMLInputElement>(null);
   const [searchFailed, setSearchFailed] = useState<boolean>(false);
+  const [searchList, setSearchList] = useRecoilState<SearchItem[]>(SearchList);
 
-  const [recommendationList, setRecommendationList] =
-    useRecoilState<SearchItem[]>(RecommendationList);
-
+  const inputSearchRef = useRef<HTMLInputElement>(null);
   const debouncedSearchQuery = useDebounce<string>(searchQuery, 200);
 
   const fallbackPosterUrl: string =
@@ -45,14 +43,14 @@ const WelcomePage: React.FC = () => {
   // https://ipapi.co/json/ get client country to get streaming providers for lists
 
   const addItemToRecommendationList = (item: SearchItem) => {
-    setRecommendationList((prevState) => [...prevState, item]);
+    setSearchList((prevState) => [...prevState, item]);
     // check movie/show doesn't exist in list already?
     setSearchResult([]);
     setSearchQuery('');
     inputSearchRef?.current?.focus();
   };
 
-  // handle search with no results
+  // TODO: handle search with no results - generally better search and request handling
 
   return (
     <Box>
@@ -74,13 +72,13 @@ const WelcomePage: React.FC = () => {
           }}
         >
           <Box my={10}>
-            {recommendationList.length > 0 && (
+            {searchList.length > 0 && (
               <>
                 <Heading as="h5" size="sm">
                   Recommendations added:
                 </Heading>
                 <ol>
-                  {recommendationList.map((listItem) => (
+                  {searchList.map((listItem) => (
                     <li key={listItem.id}>{listItem.title}</li>
                   ))}
                 </ol>

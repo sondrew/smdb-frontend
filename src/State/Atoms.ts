@@ -11,7 +11,7 @@ export const DiscoverMovies = atom({
   default: [] as TMDbMovie[],
 });
 
-export const RecommendationList = atom({
+export const SearchList = atom({
   key: 'recommendationList',
   default: [] as SearchItem[],
 });
