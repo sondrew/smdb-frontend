@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { SearchItem } from '../../Models/BackendModels';
+import { SearchItem, ViewRecommendationList } from '../../Models/BackendModels';
 import { SearchList } from '../../State/Atoms';
-import { Container, Heading, Input } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
-import { RecommendedItem } from '../../Models/FrontendModels';
+import { Button, Container, Flex, Heading, Input } from '@chakra-ui/react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  CreateRecommendationList,
+  RecommendedItem,
+} from '../../Models/FrontendModels';
 import EditorList from './EditorList';
+import { createRecommendationList } from '../../State/DataFetch';
 
 const RecommendationEditor: React.FC = () => {
+  const navigate = useNavigate();
+  const [listName, setListName] = useState<string>('');
+  const [listDescription, setListDescription] = useState<string>('');
   const [searchList] = useRecoilState<SearchItem[]>(SearchList);
   const [recommendationList, setRecommendationList] = useState<
     RecommendedItem[]
@@ -17,14 +24,43 @@ const RecommendationEditor: React.FC = () => {
       title: item.title,
       mediaType: item.mediaType,
       releaseDate: item.releaseDate,
-      posterUrl: item.posterUrl ?? '',
+      posterUrl: item.posterUrl ?? null,
       userComment: '',
       userRating: null,
     }))
   );
 
-  const [listName, setListName] = useState<string>('');
-  const [listDescription, setListDescription] = useState<string>('');
+  const submitRecommendationList = () => {
+    console.log('hit submit');
+    // validate-
+    if (listName.length > 0 && recommendationList.length > 0) {
+      const createList: CreateRecommendationList = {
+        listName: listName,
+        listDescription: listDescription,
+        list: recommendationList.map((item, index) => ({
+          tmdbId: item.id,
+          index: index,
+          mediaType: item.mediaType,
+          userComment: item.userComment,
+          userRating: item.userRating,
+        })),
+      };
+
+      console.log({ createList });
+
+      createRecommendationList(createList)
+        .then((res) => {
+          console.log({ res });
+
+          navigate(`/${res.id}`, {
+            state: res as ViewRecommendationList,
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
 
   return (
     <Container>
@@ -66,6 +102,17 @@ const RecommendationEditor: React.FC = () => {
             listItems={recommendationList}
             setListItems={setRecommendationList}
           />
+          <Flex justifyContent="flex-end">
+            <Button
+              onClick={submitRecommendationList}
+              size="md"
+              m={3}
+              backgroundColor={'green.400'}
+              _hover={{ backgroundColor: 'green.200' }}
+            >
+              Save
+            </Button>
+          </Flex>
         </>
       )}
     </Container>
