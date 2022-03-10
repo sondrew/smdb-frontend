@@ -55,7 +55,7 @@ const EditorListItem: React.FC<EditorListItemProps> = ({
           objectFit={'fill'}
           maxW={60}
           maxH={100}
-          src={item.posterUrl}
+          src={item.posterUrl ?? ''}
           alt={`Poster of movie ${item.title}`}
           fallbackSrc={fallbackPosterUrl}
         />

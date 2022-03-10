@@ -30,15 +30,15 @@ export enum MediaType {
   tv,
 }
 
-export interface ViewRecommendationList {
+export interface RecommendationList {
   id: string;
   listName: string;
   listDescription?: string;
-  list: ViewRecommendedMediaView[];
+  list: RecommendedMedia[];
 }
 
 //@Document - maybe not needed when already inside RecommendationList?
-export interface ViewRecommendedMediaView {
+export interface RecommendedMedia {
   id: number;
   listIndex: number;
   userRating?: number;

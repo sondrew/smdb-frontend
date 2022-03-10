@@ -1,4 +1,6 @@
-import { TMDbMovie } from '../Models/BackendModels';
+import { TMDbMovie, RecommendationList } from '../Models/BackendModels';
+import { CreateRecommendationList } from '../Models/FrontendModels';
+import { list } from '@chakra-ui/react';
 
 const apiBaseUrl = 'http://localhost:8080';
 
@@ -16,6 +18,16 @@ export const unsaveMovie = (externalId: number) =>
 
 export const searchMovieAndTV = (searchQuery: string) =>
   fetchJson(apiBaseUrl + '/search/' + encodeURI(searchQuery));
+
+export const createRecommendationList = async (
+  recommendationList: CreateRecommendationList
+): Promise<RecommendationList> =>
+  await fetchJson(apiBaseUrl + '/create', 'POST', recommendationList);
+
+export const getRecommendationList = async (
+  listId: string
+): Promise<RecommendationList> =>
+  await fetchJson(apiBaseUrl + '/list/' + listId);
 
 export const fetchJson = (
   url: string,
