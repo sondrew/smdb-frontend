@@ -16,15 +16,23 @@ import { searchMovieAndTV } from '../State/DataFetch';
 import { useRecoilState } from 'recoil';
 import { SearchList } from '../State/Atoms';
 import { Link } from 'react-router-dom';
+import useKeyPress from '../Hooks/useKeyPress';
 
 const WelcomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchItem[]>([]);
   const [searchFailed, setSearchFailed] = useState<boolean>(false);
   const [searchList, setSearchList] = useRecoilState<SearchItem[]>(SearchList);
+  const [selectedSearchItem, setSelectedSearchItem] = useState<number | null>(null);
 
   const inputSearchRef = useRef<HTMLInputElement>(null);
   const debouncedSearchQuery = useDebounce<string>(searchQuery, 200);
+
+  const keypressRef = useRef<HTMLDivElement>(null);
+
+  const downPress = useKeyPress("ArrowDown", keypressRef);
+  const upPress = useKeyPress("ArrowUp", keypressRef);
+  const enterPress = useKeyPress("Enter", keypressRef);
 
   const fallbackPosterUrl: string =
     'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
@@ -40,6 +48,22 @@ const WelcomePage: React.FC = () => {
     }
   }, [debouncedSearchQuery]);
 
+  useEffect(() => {
+    if (searchResult.length && (downPress || upPress || enterPress)) {
+      if (selectedSearchItem === null) {
+        if (downPress) setSelectedSearchItem(0);
+        if (upPress) setSelectedSearchItem(searchResult.length - 1)
+      }
+      if (selectedSearchItem !== null) {
+        if (enterPress) addItemToRecommendationList(searchResult[selectedSearchItem]); // @ts-ignore
+        else if (downPress) setSelectedSearchItem((prevItem) => (prevItem < searchResult.length ? prevItem + 1 : null)); // @ts-ignore
+        else if (upPress) setSelectedSearchItem((prevItem) => (prevItem > 0 ? prevItem - 1 : null));
+
+        // TODO: Scroll screen if navigating to list item outside viewport
+      }
+    }
+  }, [searchResult, downPress, upPress, enterPress]);
+
   // https://ipapi.co/json/ get client country to get streaming providers for lists
 
   const addItemToRecommendationList = (item: SearchItem) => {
@@ -50,6 +74,7 @@ const WelcomePage: React.FC = () => {
     inputSearchRef?.current?.focus();
   };
 
+
   // TODO: handle search with no results - generally better search and request handling
 
   return (
@@ -58,7 +83,7 @@ const WelcomePage: React.FC = () => {
         Create recommendations!
       </Heading>
 
-      <Flex mt={20} justifyContent="center">
+      <Flex mt={20} justifyContent="center" ref={keypressRef}>
         <Box
           w={{
             zero: '95%',
@@ -104,15 +129,18 @@ const WelcomePage: React.FC = () => {
             </Box>
           )}
           {searchResult.length > 0 &&
-            searchResult.map((item) => (
+            searchResult.map((item, index) => (
               <Box
+                onMouseEnter={() => setSelectedSearchItem(index)}
+                onMouseLeave={() => setSelectedSearchItem(null)}
                 onClick={() => addItemToRecommendationList(item)}
                 border="1px"
                 borderColor="grey"
                 display="flex"
                 alignItems="center"
                 justifyContent="flex-start"
-                _hover={{ backgroundColor: 'grey', cursor: 'pointer' }}
+                backgroundColor={selectedSearchItem === index ? 'grey' : ''}
+                _hover={{ cursor: 'pointer' }}
                 p={1}
                 maxH={80}
                 key={item.id}
