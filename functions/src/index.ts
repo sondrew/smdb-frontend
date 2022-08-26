@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import axios, {AxiosResponse} from "axios";
-import {TMDbMultiSearchDto} from "./models";
+import {TMDbMultiSearchDto} from "./backendModels";
 import {MediaType, SearchItem} from "../../shared/models";
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
