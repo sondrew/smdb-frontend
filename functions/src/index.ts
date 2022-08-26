@@ -6,36 +6,32 @@ import {MediaType, SearchItem} from "../../shared/models";
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
 const POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
-
 const baseUrl = 'https://api.themoviedb.org/3'
 
 
-exports.searchMulti = functions.region('europe-west1').https.onCall((data, context) => {
-  console.log('searchQuery', data);
+exports.searchMulti = functions
+  .region('europe-west1')
+  .runWith({secrets: ['TMDB_API_KEY']})
+  .https.onCall((data, context) => {
+    console.log('searchQuery', data);
 
-  const requestUrl = `${baseUrl}/search/multi?query=${data}&${apiKey}`
+    const requestUrl = `${baseUrl}/search/multi?query=${data}&api_key=${process.env.TMDB_API_KEY}`
 
-  return axios.get(requestUrl).then((res: AxiosResponse<TMDbMultiSearchDto>) => {
-    console.log('then');
-    console.log('then');
-    const searchResult = mapAndFilterSearchResults(res.data)
+    return axios.get(requestUrl).then((res: AxiosResponse<TMDbMultiSearchDto>) => {
+      const searchResult = mapAndFilterSearchResults(res.data)
 
-    return {
-      status: 'ok',
-      result: searchResult
-    }
-    //return res.data.results
-  }).catch((err) => {
-      console.log('err');
-      console.log(err);
       return {
-        status: 'error',
-        error: err
+        status: 'ok',
+        result: searchResult
       }
-  })
-
-  //console.log('request');
-  //console.log(request);
+    }).catch((err) => {
+        console.log('err');
+        console.log(err);
+        return {
+          status: 'error',
+          error: err
+        }
+    })
 })
 
 const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] => {
