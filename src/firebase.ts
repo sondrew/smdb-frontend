@@ -17,9 +17,11 @@ export const db = getFirestore(app);
 
 export const functions = getFunctions(app, "europe-west1")
 
-// Don't include when pushing
-// connectFunctionsEmulator(functions, "localhost", 5001);
+if (process.env.NODE_ENV === 'development') {
+  console.log('Using emulated firebase functions on localhost:5001');
+  connectFunctionsEmulator(functions, "localhost", 5001);
+}
 
-export const addMessage = httpsCallable(functions, 'addMessage');
+export const search = httpsCallable(functions, 'searchMulti');
 
 
