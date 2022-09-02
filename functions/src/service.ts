@@ -11,6 +11,7 @@ import {MediaType, SearchItem} from "../../shared/models";
 import {searchMulti} from "./tmdbGateway";
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
+const FALLBACK_POST_URL = 'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
 const POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
 
@@ -69,7 +70,7 @@ const mapMovieToSearchItem = (media: MovieResultDto): SearchItem => {
 
 const getPosterUrl = (path: string | null): string => {
   if (path !== null) return `${POSTER_BASE_URL}${path}`
-  else return "";
+  else return FALLBACK_POST_URL;
 }
 
 

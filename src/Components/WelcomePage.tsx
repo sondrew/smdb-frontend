@@ -34,9 +34,6 @@ const WelcomePage: React.FC = () => {
   const upPress = useKeyPress("ArrowUp", keypressRef);
   const enterPress = useKeyPress("Enter", keypressRef);
 
-  const fallbackPosterUrl: string =
-    'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
-
   useEffect(() => {
     setSearchFailed(false);
     if (debouncedSearchQuery.length >= 2) {
@@ -153,7 +150,6 @@ const WelcomePage: React.FC = () => {
                   maxH={100}
                   src={item.posterUrl}
                   alt={`Poster of movie ${item.title}`}
-                  fallbackSrc={fallbackPosterUrl}
                 />
                 <Text fontSize="lg" as="h6" pl={3}>
                   {item.title}
