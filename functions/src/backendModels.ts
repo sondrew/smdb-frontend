@@ -70,4 +70,9 @@ export type PersonResultDto = {
   popularity?: number;
   known_for: Array<MovieResultDto | TVResultDto>
 }
+
+
+export const isTVShow = (media: MovieResultDto | TVResultDto | PersonResultDto): media is TVResultDto => media.media_type === MediaType.TV
+export const isMovie = (media: MovieResultDto | TVResultDto | PersonResultDto): media is MovieResultDto => media.media_type === MediaType.MOVIE
+
 }

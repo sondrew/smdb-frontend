@@ -1,4 +1,12 @@
-import {ApiResponse, ResponseStatus, TMDbMultiSearchDto} from "./backendModels";
+import {
+  ApiResponse,
+  isMovie,
+  isTVShow,
+  MovieResultDto,
+  ResponseStatus,
+  TMDbMultiSearchDto,
+  TVResultDto
+} from "./backendModels";
 import {MediaType, SearchItem} from "../../shared/models";
 import {searchMulti} from "./tmdbGateway";
 
@@ -22,36 +30,41 @@ const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] =
   if (response.total_results === 0) return []
 
   return response.results
-    .filter((media) => media.media_type === MediaType.TV || media.media_type === MediaType.MOVIE)
+    .filter((media): media is MovieResultDto | TVResultDto => isTVShow(media) || isMovie(media))
     .map((media) => {
-      if (media.media_type === MediaType.TV) {
-        return {
-          id: media.id,
-          title: media.name,
-          mediaType: MediaType.TV,
-          voteAverage: media.vote_average,
-          voteCount: media.vote_count,
-          popularity: media.popularity,
-          overview: media.overview,
-          posterUrl: getPosterUrl(media.poster_path),
-          releaseDate: media.first_air_date,
-          originalTitle: media.original_name
-        } as SearchItem
-      } else {
-        return {
-          id: media.id,
-          title: media.title,
-          mediaType: MediaType.TV,
-          voteAverage: media.vote_average,
-          voteCount: media.vote_count,
-          popularity: media.popularity,
-          overview: media.overview,
-          posterUrl: getPosterUrl(media.poster_path),
-          releaseDate: media.release_date,
-          originalTitle: media.original_title
-        } as SearchItem
-      }
+      if (isTVShow(media)) return mapTVShowToSearchItem(media)
+      else return mapMovieToSearchItem(media)
     }).sort((a, b) => b.popularity - a.popularity)
+}
+
+const mapTVShowToSearchItem = (tvShow: TVResultDto): SearchItem => {
+  return {
+    id: tvShow.id,
+    title: tvShow.name,
+    mediaType: MediaType.TV,
+    voteAverage: tvShow.vote_average,
+    voteCount: tvShow.vote_count,
+    popularity: tvShow.popularity,
+    overview: tvShow.overview,
+    posterUrl: getPosterUrl(tvShow.poster_path),
+    releaseDate: tvShow.first_air_date,
+    originalTitle: tvShow.original_name
+  } as SearchItem
+}
+
+const mapMovieToSearchItem = (media: MovieResultDto): SearchItem => {
+  return {
+    id: media.id,
+    title: media.title,
+    mediaType: MediaType.TV,
+    voteAverage: media.vote_average,
+    voteCount: media.vote_count,
+    popularity: media.popularity,
+    overview: media.overview,
+    posterUrl: getPosterUrl(media.poster_path),
+    releaseDate: media.release_date,
+    originalTitle: media.original_title
+  } as SearchItem
 }
 
 const getPosterUrl = (path: string | null): string => {
