@@ -12,7 +12,7 @@ export interface SearchItem {
   voteCount: number;
   popularity: number;
   overview: string;
-  posterUrl?: string;
-  releaseDate: string;
+  posterUrl: string | null;
+  releaseDate: string | null;
   originalTitle: string;
 }

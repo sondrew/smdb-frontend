@@ -157,9 +157,11 @@ const WelcomePage: React.FC = () => {
                 />
                 <Text fontSize="lg" as="h6" pl={3}>
                   {item.title}
-                  <Text display="inline-flex" color="lightgray" pl={2}>
-                    ({item.releaseDate.substring(0, 4)})
-                  </Text>
+                  {item.releaseDate !== null && (
+                    <Text display="inline-flex" color="lightgray" pl={2}>
+                      ({item.releaseDate.substring(0, 4)})
+                    </Text>
+                  )}
                 </Text>
                 <Badge
                   alignSelf="flex-start"

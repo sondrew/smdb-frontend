@@ -5,8 +5,8 @@ export interface RecommendedItem {
   //index: number;
   mediaType: MediaType;
   title: string;
-  releaseDate: string;
   posterUrl: string | null;
+  releaseDate: string | null;
   userComment: string;
   userRating: number | null;
 }
