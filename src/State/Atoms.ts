@@ -1,5 +1,6 @@
 import { atom, selector } from 'recoil';
-import { SearchItem, TMDbMovie } from '../Models/BackendModels';
+import { TMDbMovie } from '../Models/BackendModels';
+import {SearchItem} from "../../shared/models";
 
 export const SavedMovies = atom({
   key: 'savedMovies',

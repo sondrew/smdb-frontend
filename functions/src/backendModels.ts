@@ -25,7 +25,7 @@ export type TMDbMultiSearchDto = {
 }
 
 export type MovieResultDto = {
-  id: number,
+  id: number;
   media_type: MediaType.MOVIE;
   title?: string;
   poster_path: string | null;
@@ -39,11 +39,11 @@ export type MovieResultDto = {
   original_language: string;
   release_date?: string;
   adult: boolean;
-  genre_ids: number[]
+  genre_ids: number[];
 }
 
 export type TVResultDto = {
-  id: number,
+  id: number;
   media_type: MediaType.TV;
   name?: string;
   poster_path: string | null;
@@ -56,13 +56,13 @@ export type TVResultDto = {
   original_name?: string;
   origin_country?: string[];
   original_language: string;
-  first_air_date?: string
+  first_air_date?: string;
   adult: boolean;
   genre_ids: number[];
 }
 
 export type PersonResultDto = {
-  id: number,
+  id: number;
   media_type: MediaType.PERSON;
   name?: string;
   profile_path: string | null;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { SearchItem, RecommendationList } from '../../Models/BackendModels';
+import { RecommendationList } from '../../Models/BackendModels';
 import { SearchList } from '../../State/Atoms';
 import { Button, Container, Flex, Heading, Input } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import {
 } from '../../Models/FrontendModels';
 import EditorList from './EditorList';
 import { createRecommendationList } from '../../State/DataFetch';
+import {SearchItem} from "../../../shared/models";
 
 const RecommendationEditor: React.FC = () => {
   const navigate = useNavigate();

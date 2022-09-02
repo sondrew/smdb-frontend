@@ -11,12 +11,12 @@ import {
   Text,
 } from '@chakra-ui/react';
 import useDebounce from '../Hooks/useDebounce';
-import { SearchItem } from '../Models/BackendModels';
-import { searchMovieAndTV } from '../State/DataFetch';
 import { useRecoilState } from 'recoil';
 import { SearchList } from '../State/Atoms';
 import { Link } from 'react-router-dom';
 import useKeyPress from '../Hooks/useKeyPress';
+import {searchMoviesAndTV} from "../firebase";
+import {SearchItem} from "../../shared/models";
 
 const WelcomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');

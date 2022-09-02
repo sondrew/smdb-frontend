@@ -1,4 +1,4 @@
-import { int } from 'framer-motion/types/render/dom/value-types/type-int';
+import {MediaType} from "../../shared/models";
 
 export interface TMDbMovie {
   id: number;
@@ -10,24 +10,6 @@ export interface TMDbMovie {
   posterUrl: string;
   releaseDate: string;
   markedFavourite: boolean;
-}
-
-export interface SearchItem {
-  id: number;
-  title: string;
-  mediaType: MediaType;
-  voteAverage: number;
-  voteCount: number;
-  popularity: number;
-  overview: string;
-  posterUrl?: string;
-  releaseDate: string;
-  originalTitle: string;
-}
-
-export enum MediaType {
-  movie,
-  tv,
 }
 
 export interface RecommendationList {
