@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { connectFunctionsEmulator } from "firebase/functions";
+import {SearchItem} from "../shared/models";
 //import { getStorage, ref } from "firebase/storage";
 //import { getAuth } from "firebase/auth";
 
@@ -26,6 +27,6 @@ if (process.env.NODE_ENV === 'development') {
   connectFunctionsEmulator(functions, "localhost", 5001);
 }
 
-export const search = httpsCallable(functions, 'searchMulti');
+export const searchMoviesAndTV = httpsCallable<string, SearchItem[]>(functions, 'searchMoviesAndTV');
 
 

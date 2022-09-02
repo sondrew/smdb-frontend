@@ -40,11 +40,13 @@ const WelcomePage: React.FC = () => {
   useEffect(() => {
     setSearchFailed(false);
     if (debouncedSearchQuery.length >= 2) {
-      searchMovieAndTV(debouncedSearchQuery)
-        .then((res) => setSearchResult(res))
-        .catch((e) => setSearchFailed(true));
-    } else {
-      setSearchResult([]);
+      searchMoviesAndTV(debouncedSearchQuery)
+        .then((data) => {
+          setSearchResult(data.data)
+        }).catch((e) => {
+          console.error(e)
+          setSearchFailed(true)
+      })
     }
   }, [debouncedSearchQuery]);
 
