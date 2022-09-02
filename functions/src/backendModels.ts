@@ -1,27 +1,27 @@
 import {MediaType} from "../../shared/models";
 
+export enum ResponseStatus {
+  OK = 'ok',
+  ERROR = 'error'
+}
+
+export type ApiResponse<T> = ResponseSuccess<T> | ResponseError;
+
+export type ResponseSuccess<T> = {
+  status: ResponseStatus.OK,
+  data: T
+}
+
+export type ResponseError = {
+  status: ResponseStatus.ERROR,
+  data: any
+}
+
 export type TMDbMultiSearchDto = {
   total_results: number;
   total_pages: number;
   page: number;
   results: Array<MovieResultDto | TVResultDto>;
-}
-
-export type SearchResultDto = {
-  id: number;
-  media_type: 'MediaType';
-  title: string | null; //
-  name?: string;
-  poster_path?: string;
-  backdrop_path?: string;
-  popularity: number;
-  overview?: string;
-  vote_average?: number;
-  vote_count?: number;
-  original_title?: string;
-  original_name?: string;
-  release_date?: string;
-  first_air_date?: string;
 }
 
 export type MovieResultDto = {
