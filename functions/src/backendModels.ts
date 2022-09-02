@@ -21,7 +21,7 @@ export type TMDbMultiSearchDto = {
   total_results: number;
   total_pages: number;
   page: number;
-  results: Array<MovieResultDto | TVResultDto>;
+  results: Array<MovieResultDto | TVResultDto | PersonResultDto>;
 }
 
 export type MovieResultDto = {
@@ -42,7 +42,6 @@ export type MovieResultDto = {
   genre_ids: number[]
 }
 
-
 export type TVResultDto = {
   id: number,
   media_type: MediaType.TV;
@@ -59,5 +58,16 @@ export type TVResultDto = {
   original_language: string;
   first_air_date?: string
   adult: boolean;
-  genre_ids: number[]
+  genre_ids: number[];
+}
+
+export type PersonResultDto = {
+  id: number,
+  media_type: MediaType.PERSON;
+  name?: string;
+  profile_path: string | null;
+  adult?: boolean;
+  popularity?: number;
+  known_for: Array<MovieResultDto | TVResultDto>
+}
 }

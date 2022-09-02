@@ -1,6 +1,7 @@
 export enum MediaType {
   TV = 'tv',
-  MOVIE = 'movie'
+  MOVIE = 'movie',
+  PERSON = 'person',
 }
 
 export interface SearchItem {
