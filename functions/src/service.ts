@@ -1,38 +1,22 @@
-import * as functions from "firebase-functions";
-import axios, {AxiosResponse} from "axios";
-import {TMDbMultiSearchDto} from "./backendModels";
+import {ApiResponse, ResponseStatus, TMDbMultiSearchDto} from "./backendModels";
 import {MediaType, SearchItem} from "../../shared/models";
+import {searchMulti} from "./tmdbGateway";
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
 const POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
-const baseUrl = 'https://api.themoviedb.org/3'
 
+export const searchMovieOrTV = async (query: string, apiKey: string): Promise<SearchItem[]>  => {
+  const searchResult: ApiResponse<TMDbMultiSearchDto> = await searchMulti(query, apiKey)
 
-exports.searchMulti = functions
-  .region('europe-west1')
-  .runWith({secrets: ['TMDB_API_KEY']})
-  .https.onCall((data, context) => {
-    console.log('searchQuery', data);
+  switch (searchResult.status) {
+    case ResponseStatus.ERROR:
+      return [];
+    case ResponseStatus.OK:
+      return mapAndFilterSearchResults(searchResult.data)
+  }
+}
 
-    const requestUrl = `${baseUrl}/search/multi?query=${data}&api_key=${process.env.TMDB_API_KEY}`
-
-    return axios.get(requestUrl).then((res: AxiosResponse<TMDbMultiSearchDto>) => {
-      const searchResult = mapAndFilterSearchResults(res.data)
-
-      return {
-        status: 'ok',
-        result: searchResult
-      }
-    }).catch((err) => {
-        console.log('err');
-        console.log(err);
-        return {
-          status: 'error',
-          error: err
-        }
-    })
-})
 
 const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] => {
   if (response.total_results === 0) return []
@@ -41,7 +25,6 @@ const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] =
     .filter((media) => media.media_type === MediaType.TV || media.media_type === MediaType.MOVIE)
     .map((media) => {
       if (media.media_type === MediaType.TV) {
-        console.log(media.name);
         return {
           id: media.id,
           title: media.name,
@@ -55,7 +38,6 @@ const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] =
           originalTitle: media.original_name
         } as SearchItem
       } else {
-        console.log(media.title);
         return {
           id: media.id,
           title: media.title,
@@ -70,11 +52,11 @@ const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] =
         } as SearchItem
       }
     }).sort((a, b) => b.popularity - a.popularity)
-
 }
 
 const getPosterUrl = (path: string | null): string => {
   if (path !== null) return `${POSTER_BASE_URL}${path}`
   else return "";
 }
+
 
