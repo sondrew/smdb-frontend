@@ -1,4 +1,4 @@
-import { atom, selector } from 'recoil';
+import { atom } from 'recoil';
 import { TMDbMovie } from '../Models/BackendModels';
 import {SearchItem} from "../../shared/models";
 

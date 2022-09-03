@@ -4,22 +4,17 @@ import { RecommendationList } from '../../Models/BackendModels';
 import { SearchList } from '../../State/Atoms';
 import { Button, Container, Flex, Heading, Input } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  CreateRecommendationList,
-  RecommendedItem,
-} from '../../Models/FrontendModels';
+import { CreateRecommendationList, RecommendedItem } from '../../Models/FrontendModels';
 import EditorList from './EditorList';
 import { createRecommendationList } from '../../State/DataFetch';
-import {SearchItem} from "../../../shared/models";
+import { SearchItem } from '../../../shared/models';
 
 const RecommendationEditor: React.FC = () => {
   const navigate = useNavigate();
   const [listName, setListName] = useState<string>('');
   const [listDescription, setListDescription] = useState<string>('');
   const [searchList] = useRecoilState<SearchItem[]>(SearchList);
-  const [recommendationList, setRecommendationList] = useState<
-    RecommendedItem[]
-  >(
+  const [recommendationList, setRecommendationList] = useState<RecommendedItem[]>(
     searchList.map((item) => ({
       id: item.id,
       title: item.title,
@@ -99,10 +94,7 @@ const RecommendationEditor: React.FC = () => {
             placeholder="Description (optional)"
             mb={5}
           />
-          <EditorList
-            listItems={recommendationList}
-            setListItems={setRecommendationList}
-          />
+          <EditorList listItems={recommendationList} setListItems={setRecommendationList} />
           <Flex justifyContent="flex-end">
             <Button
               onClick={submitRecommendationList}

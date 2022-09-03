@@ -1,22 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Image,
-  Input,
-  Text,
-} from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Heading, Image, Input, Text } from '@chakra-ui/react';
 import useDebounce from '../Hooks/useDebounce';
 import { useRecoilState } from 'recoil';
 import { SearchList } from '../State/Atoms';
 import { Link } from 'react-router-dom';
 import useKeyPress from '../Hooks/useKeyPress';
-import {searchMoviesAndTV} from "../firebase";
-import {SearchItem} from "../../shared/models";
+import { searchMoviesAndTV } from '../firebase';
+import { SearchItem } from '../../shared/models';
 
 const WelcomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -30,20 +21,21 @@ const WelcomePage: React.FC = () => {
 
   const keypressRef = useRef<HTMLDivElement>(null);
 
-  const downPress = useKeyPress("ArrowDown", keypressRef);
-  const upPress = useKeyPress("ArrowUp", keypressRef);
-  const enterPress = useKeyPress("Enter", keypressRef);
+  const downPress = useKeyPress('ArrowDown', keypressRef);
+  const upPress = useKeyPress('ArrowUp', keypressRef);
+  const enterPress = useKeyPress('Enter', keypressRef);
 
   useEffect(() => {
     setSearchFailed(false);
     if (debouncedSearchQuery.length >= 2) {
       searchMoviesAndTV(debouncedSearchQuery)
         .then((data) => {
-          setSearchResult(data.data)
-        }).catch((e) => {
-          console.error(e)
-          setSearchFailed(true)
-      })
+          setSearchResult(data.data);
+        })
+        .catch((e) => {
+          console.error(e);
+          setSearchFailed(true);
+        });
     }
   }, [debouncedSearchQuery]);
 
@@ -51,11 +43,15 @@ const WelcomePage: React.FC = () => {
     if (searchResult.length && (downPress || upPress || enterPress)) {
       if (selectedSearchItem === null) {
         if (downPress) setSelectedSearchItem(0);
-        if (upPress) setSelectedSearchItem(searchResult.length - 1)
+        if (upPress) setSelectedSearchItem(searchResult.length - 1);
       }
       if (selectedSearchItem !== null) {
-        if (enterPress) addItemToRecommendationList(searchResult[selectedSearchItem]); // @ts-ignore
-        else if (downPress) setSelectedSearchItem((prevItem) => (prevItem < searchResult.length ? prevItem + 1 : null)); // @ts-ignore
+        if (enterPress) addItemToRecommendationList(searchResult[selectedSearchItem]);
+        else if (downPress)
+          setSelectedSearchItem((prevItem) =>
+            prevItem === null ? 0 : prevItem < searchResult.length ? prevItem + 1 : null
+          );
+        // @ts-ignore
         else if (upPress) setSelectedSearchItem((prevItem) => (prevItem > 0 ? prevItem - 1 : null));
 
         // TODO: Scroll screen if navigating to list item outside viewport
@@ -166,9 +162,7 @@ const WelcomePage: React.FC = () => {
                   px="2"
                   py={1}
                   color="white"
-                  backgroundColor={
-                    item.mediaType.toString() === 'tv' ? 'green' : 'red'
-                  }
+                  backgroundColor={item.mediaType.toString() === 'tv' ? 'green' : 'red'}
                   textShadow="0 0 3px black"
                 >
                   {item.mediaType.toString().toUpperCase()}

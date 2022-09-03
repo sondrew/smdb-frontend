@@ -11,11 +11,7 @@ interface MovieGridElementProps {
   toggleFavourite: (index: number) => void;
 }
 
-const MovieGridElement: React.FC<MovieGridElementProps> = ({
-  movie,
-  toggleFavourite,
-  index,
-}) => {
+const MovieGridElement: React.FC<MovieGridElementProps> = ({ movie, toggleFavourite, index }) => {
   const fallbackPosterUrl: string =
     'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
 
@@ -34,17 +30,9 @@ const MovieGridElement: React.FC<MovieGridElementProps> = ({
         alt={`Poster of movie ${movie.title}`}
         fallbackSrc={fallbackPosterUrl}
       />
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        p={1}
-      >
+      <Box display="flex" alignItems="center" justifyContent="space-between" p={1}>
         <RatingBadge rating={movie.voteAverage} voteCount={movie.voteCount} />
-        <Star
-          favourite={movie.markedFavourite}
-          toggleFavourite={() => toggleFavourite(index)}
-        />
+        <Star favourite={movie.markedFavourite} toggleFavourite={() => toggleFavourite(index)} />
       </Box>
       <Box textAlign="center" letterSpacing="wide" p={2}>
         {movie.title}

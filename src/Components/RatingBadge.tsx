@@ -6,8 +6,7 @@ interface RatingBadgeProps {
   voteCount: number;
 }
 
-const calculateRatingColor = (rating: number) =>
-  `hsla(${rating * 10}, 95%, 63%, 0.9)`;
+const calculateRatingColor = (rating: number) => `hsla(${rating * 10}, 95%, 63%, 0.9)`;
 
 const RatingBadge: React.FC<RatingBadgeProps> = ({ rating, voteCount }) => {
   return (

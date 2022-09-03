@@ -1,12 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { RecommendedItem } from '../../Models/FrontendModels';
 import { List } from '@chakra-ui/react';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import EditorListItem from './EditorListItem';
 
 interface EditorListProps {
@@ -35,11 +30,7 @@ const EditorList: React.FC<EditorListProps> = ({ listItems, setListItems }) => {
         userComment: comment,
       };
 
-      return [
-        ...prevState.slice(0, index),
-        updatedItem,
-        ...prevState.slice(index + 1),
-      ];
+      return [...prevState.slice(0, index), updatedItem, ...prevState.slice(index + 1)];
     });
   };
 

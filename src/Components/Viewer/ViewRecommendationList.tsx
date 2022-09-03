@@ -8,8 +8,9 @@ const ViewRecommendationList: React.FC = () => {
   const { state } = useLocation(); // get recommendation list right after creation
   let { listId } = useParams();
 
-  const [recommendations, setRecommendations] =
-    useState<RecommendationList | null>(state as RecommendationList);
+  const [recommendations, setRecommendations] = useState<RecommendationList | null>(
+    state as RecommendationList
+  );
 
   useEffect(() => {
     if (recommendations == null && !!listId) {
@@ -29,8 +30,7 @@ const ViewRecommendationList: React.FC = () => {
 
   console.log({ listId });
 
-  const renderRecommendations =
-    recommendations?.list != null && recommendations.list.length > 0;
+  const renderRecommendations = recommendations?.list != null && recommendations.list.length > 0;
 
   console.log({ state });
 

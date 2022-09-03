@@ -4,18 +4,12 @@ import { useRecoilState } from 'recoil';
 import { Button, Heading, SimpleGrid } from '@chakra-ui/react';
 
 import { DiscoverMovies } from '../State/Atoms';
-import {
-  getDiscoverMovies,
-  getFavouriteMovies,
-  saveMovie,
-  unsaveMovie,
-} from '../State/DataFetch';
+import { getDiscoverMovies, getFavouriteMovies, saveMovie, unsaveMovie } from '../State/DataFetch';
 import { TMDbMovie } from '../Models/BackendModels';
 import MovieGridElement from './MovieGridElement';
 
 const Dashboard: React.FC = () => {
-  const [discoverMovies, setDiscoverMovies] =
-    useRecoilState<TMDbMovie[]>(DiscoverMovies);
+  const [discoverMovies, setDiscoverMovies] = useRecoilState<TMDbMovie[]>(DiscoverMovies);
 
   useEffect(() => {
     if (discoverMovies.length === 0) {

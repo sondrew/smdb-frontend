@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Badge,
-  Box,
-  Flex,
-  Image,
-  Input,
-  ListItem,
-  Text,
-} from '@chakra-ui/react';
+import { Badge, Box, Flex, Image, Input, ListItem, Text } from '@chakra-ui/react';
 import { RecommendedItem } from '../../Models/FrontendModels';
 import { DraggableProvided } from 'react-beautiful-dnd';
 
