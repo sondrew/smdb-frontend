@@ -1,20 +1,15 @@
 import { TMDbMovie, RecommendationList } from '../Models/BackendModels';
 import { CreateRecommendationList } from '../Models/FrontendModels';
-import { list } from '@chakra-ui/react';
 
 const apiBaseUrl = 'http://localhost:8080';
 
-export const getFavouriteMovies = (): Promise<TMDbMovie[]> =>
-  fetchJson(apiBaseUrl + '/favourites');
+export const getFavouriteMovies = (): Promise<TMDbMovie[]> => fetchJson(apiBaseUrl + '/favourites');
 
-export const getDiscoverMovies = (): Promise<TMDbMovie[]> =>
-  fetchJson(apiBaseUrl + '/discover');
+export const getDiscoverMovies = (): Promise<TMDbMovie[]> => fetchJson(apiBaseUrl + '/discover');
 
-export const saveMovie = (externalId: number) =>
-  fetchJson(apiBaseUrl + '/save/' + externalId);
+export const saveMovie = (externalId: number) => fetchJson(apiBaseUrl + '/save/' + externalId);
 
-export const unsaveMovie = (externalId: number) =>
-  fetchJson(apiBaseUrl + '/unsave/' + externalId);
+export const unsaveMovie = (externalId: number) => fetchJson(apiBaseUrl + '/unsave/' + externalId);
 
 export const searchMovieAndTV = (searchQuery: string) =>
   fetchJson(apiBaseUrl + '/search/' + encodeURI(searchQuery));
@@ -24,16 +19,10 @@ export const createRecommendationList = async (
 ): Promise<RecommendationList> =>
   await fetchJson(apiBaseUrl + '/create', 'POST', recommendationList);
 
-export const getRecommendationList = async (
-  listId: string
-): Promise<RecommendationList> =>
+export const getRecommendationList = async (listId: string): Promise<RecommendationList> =>
   await fetchJson(apiBaseUrl + '/list/' + listId);
 
-export const fetchJson = (
-  url: string,
-  method: string = 'GET',
-  requestBody: any = null
-) => {
+export const fetchJson = (url: string, method: string = 'GET', requestBody: any = null) => {
   const body =
     method !== 'GET' && method !== 'HEAD' && requestBody != null
       ? JSON.stringify(requestBody)

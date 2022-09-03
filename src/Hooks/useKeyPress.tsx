@@ -1,4 +1,4 @@
-import React, { useState, useEffect, RefObject } from 'react';
+import { useState, useEffect, RefObject } from 'react';
 
 const useKeyPress = (targetKey: string, ref: RefObject<HTMLDivElement>) => {
   const [keyPressed, setKeyPressed] = useState(false);
