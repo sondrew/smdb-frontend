@@ -24,9 +24,15 @@ export const searchMulti = (
       } as ResponseSuccess<TMDbMultiSearchDto>);
     })
     .catch((err) => {
+      console.warn(`Error: Request searchMulti failed for search query '${query}'`);
+      console.log(err?.response);
       return Promise.reject({
         status: ResponseStatus.ERROR,
-        data: err,
+        data: {
+          statusCode: err?.response?.status,
+          request: 'searchMulti',
+          input: query,
+        },
       } as ResponseError);
     });
 };
@@ -38,12 +44,6 @@ export const getMovieAndTVShowDetails = async (
 ) => {
   const tvDetails = await getMultipleTVShowDetails(tvShowIds, apiKey);
   const movieDetails = await getMultipleMoviesDetails(movieIds, apiKey);
-
-  console.log('TV DETAILS AFTER');
-  console.log(tvDetails);
-
-  console.log('after await');
-  console.log(movieDetails);
 
   return {
     tvShowResponses: tvDetails,
@@ -61,9 +61,6 @@ export const getMultipleTVShowDetails = async (
     .all([...tvShowRequests])
     .then(
       axios.spread((...responses) => {
-        console.log('TV ALL THEN');
-        console.log(responses);
-
         const successfulResponses = responses.filter(
           (response): response is ResponseSuccess<TVDetailsDto> =>
             response.status === ResponseStatus.OK
@@ -80,12 +77,14 @@ export const getMultipleTVShowDetails = async (
         } as CreateListTVShowResponses;
       })
     )
-    .catch((err) => {
+    .catch((error) => {
+      console.warn(`Error: Request getMultipleTVShowDetails failed for ids ${tmdbIds}`);
+      console.log(error);
       return {
         status: ResponseStatus.ERROR,
         successful: [],
         failed: [],
-        error: err,
+        error: error?.data,
       } as CreateListTVShowResponses;
     });
 };
@@ -119,12 +118,14 @@ export const getMultipleMoviesDetails = async (
         } as CreateListMoviesResponses;
       })
     )
-    .catch((err) => {
+    .catch((error) => {
+      console.warn(`Error: Request getMultipleMovieDetails failed for ids ${tmdbIds}`);
+      console.log(error);
       return {
         status: ResponseStatus.ERROR,
         successful: [],
         failed: [],
-        error: err,
+        error: error?.data,
       } as CreateListMoviesResponses;
     });
 };
@@ -149,11 +150,15 @@ export const getTVShowDetails = async (
       } as ResponseSuccess<TVDetailsDto>);
     })
     .catch((err) => {
-      console.log('TV ERROR');
-      console.log(err);
+      console.warn(`Error: Request getTVShowDetails failed for id '${tmdbId}'`);
+      console.log(err?.response);
       return Promise.reject({
         status: ResponseStatus.ERROR,
-        data: err,
+        data: {
+          statusCode: err?.response?.status,
+          request: 'getTVShowDetails',
+          input: tmdbId,
+        },
       } as ResponseError);
     });
 };
@@ -180,11 +185,15 @@ export const getMovieDetails = (
       } as ResponseSuccess<MovieDetailsDto>);
     })
     .catch((err) => {
-      console.log('MOVIE ERROR');
-      console.log(err);
+      console.warn(`Error: Request getMovieDetails failed for id '${tmdbId}'`);
+      console.log(err?.response);
       return Promise.reject({
         status: ResponseStatus.ERROR,
-        data: err,
+        data: {
+          statusCode: err?.response?.status,
+          request: 'getMovieDetails',
+          input: tmdbId,
+        },
       } as ResponseError);
     });
 };

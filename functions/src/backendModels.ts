@@ -14,7 +14,11 @@ export type ResponseSuccess<T> = {
 
 export type ResponseError = {
   status: ResponseStatus.ERROR;
-  data: any;
+  data: {
+    input: string | number;
+    statusCode: number;
+    request: string;
+  };
 };
 
 export type TMDbMultiSearchDto = {
