@@ -36,11 +36,28 @@ export const getMovieAndTVShowDetails = async (
   tvShowIds: number[],
   apiKey: string
 ) => {
-  console.log('repo');
-  const movieRequests = movieIds.map((movieId) => getMovieDetails(movieId, apiKey));
-  const tvShowRequests = tvShowIds.map((tvShowId) => getTVShowDetails(tvShowId, apiKey));
+  const tvDetails = await getMultipleTVShowDetails(tvShowIds, apiKey);
+  const movieDetails = await getMultipleMoviesDetails(movieIds, apiKey);
 
-  const tvDetails = await axios
+  console.log('TV DETAILS AFTER');
+  console.log(tvDetails);
+
+  console.log('after await');
+  console.log(movieDetails);
+
+  return {
+    tvShowResponses: tvDetails,
+    movieResponses: movieDetails,
+  } as CreateListResponse;
+};
+
+export const getMultipleTVShowDetails = async (
+  tmdbIds: number[],
+  apiKey: string
+): Promise<CreateListTVShowResponses> => {
+  const tvShowRequests = tmdbIds.map((tvShowId) => getTVShowDetails(tvShowId, apiKey));
+
+  return await axios
     .all([...tvShowRequests])
     .then(
       axios.spread((...responses) => {
@@ -71,12 +88,19 @@ export const getMovieAndTVShowDetails = async (
         error: err,
       } as CreateListTVShowResponses;
     });
+};
 
-  const movieDetails = await axios
+export const getMultipleMoviesDetails = async (
+  tmdbIds: number[],
+  apiKey: string
+): Promise<CreateListMoviesResponses> => {
+  const movieRequests = tmdbIds.map((tvShowId) => getMovieDetails(tvShowId, apiKey));
+
+  return await axios
     .all([...movieRequests])
     .then(
       axios.spread((...responses) => {
-        console.log('MOVIE ALL THEN');
+        console.log('TV ALL THEN');
         console.log(responses);
 
         const successfulResponses = responses.filter(
@@ -96,9 +120,6 @@ export const getMovieAndTVShowDetails = async (
       })
     )
     .catch((err) => {
-      console.log('error');
-      console.log(err);
-
       return {
         status: ResponseStatus.ERROR,
         successful: [],
@@ -106,17 +127,6 @@ export const getMovieAndTVShowDetails = async (
         error: err,
       } as CreateListMoviesResponses;
     });
-
-  console.log('TV DETAILS AFTER');
-  console.log(tvDetails);
-
-  console.log('after await');
-  console.log(movieDetails);
-
-  return {
-    tvShowResponses: tvDetails,
-    movieResponses: movieDetails,
-  } as CreateListResponse;
 };
 
 export const getTVShowDetails = async (
