@@ -30,6 +30,95 @@ export const searchMulti = (
       } as ResponseError);
     });
 };
+
+export const getMovieAndTVShowDetails = async (
+  movieIds: number[],
+  tvShowIds: number[],
+  apiKey: string
+) => {
+  console.log('repo');
+  const movieRequests = movieIds.map((movieId) => getMovieDetails(movieId, apiKey));
+  const tvShowRequests = tvShowIds.map((tvShowId) => getTVShowDetails(tvShowId, apiKey));
+
+  const tvDetails = await axios
+    .all([...tvShowRequests])
+    .then(
+      axios.spread((...responses) => {
+        console.log('TV ALL THEN');
+        console.log(responses);
+
+        const successfulResponses = responses.filter(
+          (response): response is ResponseSuccess<TVDetailsDto> =>
+            response.status === ResponseStatus.OK
+        );
+        const failedResponses = responses.filter(
+          (response): response is ResponseError => response.status === ResponseStatus.ERROR
+        );
+
+        return {
+          status: ResponseStatus.OK,
+          successful: successfulResponses,
+          failed: failedResponses,
+          error: null,
+        } as CreateListTVShowResponses;
+      })
+    )
+    .catch((err) => {
+      return {
+        status: ResponseStatus.ERROR,
+        successful: [],
+        failed: [],
+        error: err,
+      } as CreateListTVShowResponses;
+    });
+
+  const movieDetails = await axios
+    .all([...movieRequests])
+    .then(
+      axios.spread((...responses) => {
+        console.log('MOVIE ALL THEN');
+        console.log(responses);
+
+        const successfulResponses = responses.filter(
+          (response): response is ResponseSuccess<MovieDetailsDto> =>
+            response.status === ResponseStatus.OK
+        );
+        const failedResponses = responses.filter(
+          (response): response is ResponseError => response.status === ResponseStatus.ERROR
+        );
+
+        return {
+          status: ResponseStatus.OK,
+          successful: successfulResponses,
+          failed: failedResponses,
+          error: null,
+        } as CreateListMoviesResponses;
+      })
+    )
+    .catch((err) => {
+      console.log('error');
+      console.log(err);
+
+      return {
+        status: ResponseStatus.ERROR,
+        successful: [],
+        failed: [],
+        error: err,
+      } as CreateListMoviesResponses;
+    });
+
+  console.log('TV DETAILS AFTER');
+  console.log(tvDetails);
+
+  console.log('after await');
+  console.log(movieDetails);
+
+  return {
+    tvShowResponses: tvDetails,
+    movieResponses: movieDetails,
+  } as CreateListResponse;
+};
+
 export const getTVShowDetails = async (
   tmdbId: number,
   apiKey: string,
