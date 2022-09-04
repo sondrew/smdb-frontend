@@ -2,13 +2,13 @@ import {
   ApiResponse,
   isMovie,
   isTVShow,
-  MovieResultDto,
+  MovieSearchResultDto,
   ResponseStatus,
   TMDbMultiSearchDto,
-  TVResultDto,
+  TVSearchResultDto,
 } from './backendModels';
-import { MediaType, SearchItem } from '../../shared/models';
-import { searchMulti } from './tmdbGateway';
+import { CreateListRequest, MediaType, SearchItem } from '../../shared/models';
+import { getMovieAndTVShowDetails, searchMulti } from './tmdbGateway';
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
 const FALLBACK_POST_URL =
@@ -30,7 +30,10 @@ const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] =
   if (response.total_results === 0) return [];
 
   return response.results
-    .filter((media): media is MovieResultDto | TVResultDto => isTVShow(media) || isMovie(media))
+    .filter(
+      (media): media is MovieSearchResultDto | TVSearchResultDto =>
+        isTVShow(media) || isMovie(media)
+    )
     .map((media) => {
       if (isTVShow(media)) return mapTVShowToSearchItem(media);
       else return mapMovieToSearchItem(media);
@@ -38,7 +41,7 @@ const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] =
     .sort((a, b) => b.popularity - a.popularity);
 };
 
-const mapTVShowToSearchItem = (tvShow: TVResultDto): SearchItem => {
+const mapTVShowToSearchItem = (tvShow: TVSearchResultDto): SearchItem => {
   return {
     id: tvShow.id,
     title: tvShow.name,
@@ -53,11 +56,11 @@ const mapTVShowToSearchItem = (tvShow: TVResultDto): SearchItem => {
   } as SearchItem;
 };
 
-const mapMovieToSearchItem = (media: MovieResultDto): SearchItem => {
+const mapMovieToSearchItem = (media: MovieSearchResultDto): SearchItem => {
   return {
     id: media.id,
     title: media.title,
-    mediaType: MediaType.TV,
+    mediaType: MediaType.MOVIE,
     voteAverage: media.vote_average,
     voteCount: media.vote_count,
     popularity: media.popularity,
