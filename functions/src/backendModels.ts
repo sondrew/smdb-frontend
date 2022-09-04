@@ -69,10 +69,59 @@ export type PersonSearchResultDto = {
   adult?: boolean;
   popularity?: number;
   known_for: Array<MovieSearchResultDto | TVSearchResultDto>;
-}
+};
 
+export type TVDetailsDto = {
+  id: number;
+  name: string;
+  vote_average: number;
+  vote_count: number;
+  popularity: number;
+  overview: string;
+  poster_path: string | null;
+  first_air_date: string;
+  last_air_date: string;
+  number_of_seasons: number;
+  number_of_episodes: number;
+  original_name: string;
+  in_production: Boolean;
+  genres: GenreDto[];
+  status: string;
+  tagline: string;
+  external_ids?: ExternalIdsDto;
+  //@JsonAlias("watch/providers")
+  //watch_providers: ?StreamResponseDto;
+};
+
+export type MovieDetailsDto = {
+  id: number;
+  title: string;
+  original_title: string;
+  vote_average: number;
+  vote_count: number;
+  popularity: number;
+  overview: string;
+  poster_path: string;
+  release_date: string;
+  tagline?: string;
+  genres: GenreDto[];
+  video: Boolean;
+  imdb_id?: string;
+};
 
 export const isTVShow = (media: MovieResultDto | TVResultDto | PersonResultDto): media is TVResultDto => media.media_type === MediaType.TV
 export const isMovie = (media: MovieResultDto | TVResultDto | PersonResultDto): media is MovieResultDto => media.media_type === MediaType.MOVIE
+export type ExternalIdsDto = {
+  imdb_id?: string;
+  facebook_id?: string;
+  instagram_id?: string;
+  twitter_id?: string;
+};
+
+export type GenreDto = {
+  id: number;
+  name: string;
+};
+
 
 }
