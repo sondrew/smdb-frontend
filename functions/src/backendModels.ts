@@ -1,30 +1,30 @@
-import {MediaType} from "../../shared/models";
+import { MediaType } from '../../shared/models';
 
 export enum ResponseStatus {
   OK = 'ok',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 export type ApiResponse<T> = ResponseSuccess<T> | ResponseError;
 
 export type ResponseSuccess<T> = {
-  status: ResponseStatus.OK,
-  data: T
-}
+  status: ResponseStatus.OK;
+  data: T;
+};
 
 export type ResponseError = {
-  status: ResponseStatus.ERROR,
-  data: any
-}
+  status: ResponseStatus.ERROR;
+  data: any;
+};
 
 export type TMDbMultiSearchDto = {
   total_results: number;
   total_pages: number;
   page: number;
-  results: Array<MovieResultDto | TVResultDto | PersonResultDto>;
-}
+  results: Array<MovieSearchResultDto | TVSearchResultDto | PersonSearchResultDto>;
+};
 
-export type MovieResultDto = {
+export type MovieSearchResultDto = {
   id: number;
   media_type: MediaType.MOVIE;
   title?: string;
@@ -40,9 +40,9 @@ export type MovieResultDto = {
   release_date?: string;
   adult: boolean;
   genre_ids: number[];
-}
+};
 
-export type TVResultDto = {
+export type TVSearchResultDto = {
   id: number;
   media_type: MediaType.TV;
   name?: string;
@@ -59,16 +59,16 @@ export type TVResultDto = {
   first_air_date?: string;
   adult: boolean;
   genre_ids: number[];
-}
+};
 
-export type PersonResultDto = {
+export type PersonSearchResultDto = {
   id: number;
   media_type: MediaType.PERSON;
   name?: string;
   profile_path: string | null;
   adult?: boolean;
   popularity?: number;
-  known_for: Array<MovieResultDto | TVResultDto>
+  known_for: Array<MovieSearchResultDto | TVSearchResultDto>;
 }
 
 
