@@ -1,10 +1,15 @@
 import axios, { AxiosResponse } from 'axios';
 import {
   ApiResponse,
+  CreateListMoviesResponses,
+  CreateListResponse,
+  CreateListTVShowResponses,
+  MovieDetailsDto,
   ResponseError,
   ResponseStatus,
   ResponseSuccess,
   TMDbMultiSearchDto,
+  TVDetailsDto,
 } from './backendModels';
 
 const baseUrl = 'https://api.themoviedb.org/3';

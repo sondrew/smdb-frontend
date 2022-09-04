@@ -127,5 +127,24 @@ export type GenreDto = {
   name: string;
 };
 
+export type CreateListResponse = {
+  tvShowResponses: CreateListTVShowResponses;
+  movieResponses: CreateListMoviesResponses;
+};
+
+export type CreateListTVShowResponses = {
+  status: ResponseStatus;
+  successful: ResponseSuccess<TVDetailsDto>[];
+  failed: ResponseError[];
+  error: any | null;
+};
+
+export type CreateListMoviesResponses = {
+  status: ResponseStatus;
+  successful: ResponseSuccess<MovieDetailsDto>[];
+  failed: ResponseError[];
+  error: any | null;
+};
+
 
 }
