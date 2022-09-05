@@ -16,3 +16,18 @@ export interface SearchItem {
   releaseDate: string | null;
   originalTitle: string;
 }
+
+export interface CreateListRequest {
+  listName: string;
+  listDescription: string | null;
+  list: CreateListItemRequest[];
+}
+
+export interface CreateListItemRequest {
+  tmdbId: number;
+  index: number;
+  mediaType: MediaType;
+  userComment?: string;
+  userRating?: number | null;
+}
+
