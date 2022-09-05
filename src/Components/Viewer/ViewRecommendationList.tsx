@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { RecommendationList } from '../../Models/BackendModels';
 import { Box, Container, Heading, Text } from '@chakra-ui/react';
 import { getRecommendationList } from '../../State/DataFetch';
+import { RecommendationList } from '../../../shared/models';
 
 const ViewRecommendationList: React.FC = () => {
   const { state } = useLocation(); // get recommendation list right after creation

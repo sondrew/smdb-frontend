@@ -10,6 +10,7 @@ import WelcomePage from './Components/WelcomePage';
 import './App.css';
 import customTheme from './customTheme';
 import RecommendationEditor from './Components/Editor/RecommendationEditor';
+import ViewRecommendationList from './Components/Viewer/ViewRecommendationList';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path="/favourites" element={<Dashboard />} />
               <Route path="/" element={<WelcomePage />} />
               <Route path="/edit" element={<RecommendationEditor />} />
+              <Route path="/l/*" element={<ViewRecommendationList />} />
             </Routes>
           </div>
         </ChakraProvider>

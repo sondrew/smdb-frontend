@@ -46,7 +46,7 @@ const RecommendationEditor: React.FC = () => {
 
       createRecommendationList(createList)
         .then((result) => {
-          navigate(`/${result.data.id}`, {
+          navigate(`/l/${result.data.id}`, {
             state: result.data as RecommendationList,
           });
         })
