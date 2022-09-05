@@ -2,8 +2,9 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { connectFunctionsEmulator } from 'firebase/functions';
-import { SearchItem } from '../shared/models';
+import { RecommendationList, SearchItem } from '../shared/models';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { CreateListRequest } from '../shared/requestModels';
 //import { getStorage, ref } from "firebase/storage";
 //import { getAuth } from "firebase/auth";
 
@@ -35,4 +36,9 @@ if (process.env.NODE_ENV === 'development') {
 export const searchMoviesAndTV = httpsCallable<string, SearchItem[]>(
   functions,
   'searchMoviesAndTV'
+);
+
+export const createRecommendationList = httpsCallable<CreateListRequest, RecommendationList>(
+  functions,
+  'createRecommendationList'
 );
