@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 import {
   ApiResponse,
-  CreateListMoviesResponses,
-  CreateListResponse,
-  CreateListTVShowResponses,
+  MovieAndTVShowDetailsResponse,
   MovieDetailsDto,
+  MultipleMediaDetailResponses,
   ResponseError,
+  ResponseErrorData,
   ResponseStatus,
   ResponseSuccess,
   TMDbMultiSearchDto,
@@ -50,88 +50,54 @@ export const getMovieAndTVShowDetails = async (
   const tvDetails = await getMultipleTVShowDetails(tvShowIds, apiKey);
   const movieDetails = await getMultipleMoviesDetails(movieIds, apiKey);
 
-  return {
-    tvShowResponses: tvDetails,
-    movieResponses: movieDetails,
-  } as CreateListResponse;
+  return new MovieAndTVShowDetailsResponse(movieDetails, tvDetails);
 };
 
 export const getMultipleTVShowDetails = async (
   tmdbIds: number[],
   apiKey: string
-): Promise<CreateListTVShowResponses> => {
+): Promise<MultipleMediaDetailResponses<TVDetailsDto>> => {
+  if (tmdbIds.length === 0) {
+    return MultipleMediaDetailResponses.returnEmptyResponse();
+  }
+
   const tvShowRequests = tmdbIds.map((tvShowId) => getTVShowDetails(tvShowId, apiKey));
 
   return await axios
     .all([...tvShowRequests])
     .then(
       axios.spread((...responses) => {
-        const successfulResponses = responses.filter(
-          (response): response is ResponseSuccess<TVDetailsDto> =>
-            response.status === ResponseStatus.OK
-        );
-        const failedResponses = responses.filter(
-          (response): response is ResponseError => response.status === ResponseStatus.ERROR
-        );
-
-        return {
-          status: ResponseStatus.OK,
-          successful: successfulResponses,
-          failed: failedResponses,
-          error: null,
-        } as CreateListTVShowResponses;
+        return new MultipleMediaDetailResponses(responses);
       })
     )
-    .catch((error) => {
+    .catch((error: ResponseError) => {
       console.warn(`Error: Request getMultipleTVShowDetails failed for ids ${tmdbIds}`);
       console.log(error);
-      return {
-        status: ResponseStatus.ERROR,
-        successful: [],
-        failed: [],
-        error: error?.data,
-      } as CreateListTVShowResponses;
+      return new MultipleMediaDetailResponses<TVDetailsDto>([], error.data);
     });
 };
 
 export const getMultipleMoviesDetails = async (
   tmdbIds: number[],
   apiKey: string
-): Promise<CreateListMoviesResponses> => {
+): Promise<MultipleMediaDetailResponses<MovieDetailsDto>> => {
+  if (tmdbIds.length === 0) {
+    return MultipleMediaDetailResponses.returnEmptyResponse();
+  }
+
   const movieRequests = tmdbIds.map((tvShowId) => getMovieDetails(tvShowId, apiKey));
 
   return await axios
     .all([...movieRequests])
     .then(
       axios.spread((...responses) => {
-        console.log('TV ALL THEN');
-        console.log(responses);
-
-        const successfulResponses = responses.filter(
-          (response): response is ResponseSuccess<MovieDetailsDto> =>
-            response.status === ResponseStatus.OK
-        );
-        const failedResponses = responses.filter(
-          (response): response is ResponseError => response.status === ResponseStatus.ERROR
-        );
-
-        return {
-          status: ResponseStatus.OK,
-          successful: successfulResponses,
-          failed: failedResponses,
-          error: null,
-        } as CreateListMoviesResponses;
+        return new MultipleMediaDetailResponses(responses);
       })
     )
-    .catch((error) => {
+    .catch((error: ResponseError) => {
       console.warn(`Error: Request getMultipleMovieDetails failed for ids ${tmdbIds}`);
       console.log(error);
-      return {
-        status: ResponseStatus.ERROR,
-        successful: [],
-        failed: [],
-        error: error?.data,
-      } as CreateListMoviesResponses;
+      return new MultipleMediaDetailResponses<MovieDetailsDto>([], error.data);
     });
 };
 
@@ -147,8 +113,6 @@ export const getTVShowDetails = async (
   return axios
     .get(requestUrl)
     .then((response: AxiosResponse<TVDetailsDto>) => {
-      console.log('tv then');
-      console.log(response.data.name);
       return Promise.resolve({
         status: ResponseStatus.OK,
         data: response.data as TVDetailsDto,
@@ -177,13 +141,9 @@ export const getMovieDetails = (
     withProviders ? '&append_to_response=watch/providers' : ''
   }`;
 
-  console.log('get movie');
-
   return axios
     .get(requestUrl)
     .then((response: AxiosResponse<MovieDetailsDto>) => {
-      console.log('movie then');
-      console.log(response.data.title);
       return Promise.resolve({
         status: ResponseStatus.OK,
         data: response.data as MovieDetailsDto,

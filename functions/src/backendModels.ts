@@ -1,4 +1,10 @@
-import { MediaType } from '../../shared/models';
+import {
+  CreateListRequest,
+  MediaDetails,
+  MediaType,
+  RecommendationList,
+} from '../../shared/models';
+import { CreateRecommendationListEntity, RecommendedMediaEntity } from './entityModels';
 
 export enum ResponseStatus {
   OK = 'ok',
@@ -14,11 +20,13 @@ export type ResponseSuccess<T> = {
 
 export type ResponseError = {
   status: ResponseStatus.ERROR;
-  data: {
-    input: string | number;
-    statusCode: number;
-    request: string;
-  };
+  data: ResponseErrorData;
+};
+
+export type ResponseErrorData = {
+  input: string | number;
+  statusCode: number;
+  request: string;
 };
 
 export type TMDbMultiSearchDto = {
@@ -113,8 +121,6 @@ export type MovieDetailsDto = {
   imdb_id?: string;
 };
 
-export const isTVShow = (media: MovieResultDto | TVResultDto | PersonResultDto): media is TVResultDto => media.media_type === MediaType.TV
-export const isMovie = (media: MovieResultDto | TVResultDto | PersonResultDto): media is MovieResultDto => media.media_type === MediaType.MOVIE
 export type ExternalIdsDto = {
   imdb_id?: string;
   facebook_id?: string;
@@ -127,24 +133,50 @@ export type GenreDto = {
   name: string;
 };
 
-export type CreateListResponse = {
-  tvShowResponses: CreateListTVShowResponses;
-  movieResponses: CreateListMoviesResponses;
-};
+export class MovieAndTVShowDetailsResponse {
+  movieResponses: MultipleMediaDetailResponses<MovieDetailsDto>;
+  tvShowResponses: MultipleMediaDetailResponses<TVDetailsDto>;
 
-export type CreateListTVShowResponses = {
-  status: ResponseStatus;
-  successful: ResponseSuccess<TVDetailsDto>[];
-  failed: ResponseError[];
-  error: any | null;
-};
-
-export type CreateListMoviesResponses = {
-  status: ResponseStatus;
-  successful: ResponseSuccess<MovieDetailsDto>[];
-  failed: ResponseError[];
-  error: any | null;
-};
-
+  constructor(
+    movies: MultipleMediaDetailResponses<MovieDetailsDto>,
+    tvShows: MultipleMediaDetailResponses<TVDetailsDto>
+  ) {
+    this.movieResponses = movies;
+    this.tvShowResponses = tvShows;
+  }
 
 }
+
+export class MultipleMediaDetailResponses<T> {
+  status: ResponseStatus;
+  data: ResponseSuccess<T>[];
+  error: any | null;
+
+  constructor(responses: ApiResponse<T>[], error?: ResponseErrorData) {
+    this.status = !!error ? ResponseStatus.ERROR : ResponseStatus.OK;
+    this.data = responses.filter(
+      (media): media is ResponseSuccess<T> => media.status === ResponseStatus.OK
+    );
+    this.error = !!error ? error : null;
+  }
+
+  getMediaData(): T[] {
+    return this.data.map((media) => media.data);
+  }
+
+  static returnEmptyResponse<T>(): MultipleMediaDetailResponses<T> {
+    return new MultipleMediaDetailResponses<T>([]);
+  }
+}
+
+export const isTVShow = (
+  media: MovieSearchResultDto | TVSearchResultDto | PersonSearchResultDto
+): media is TVSearchResultDto => media.media_type === MediaType.TV;
+export const isMovie = (
+  media: MovieSearchResultDto | TVSearchResultDto | PersonSearchResultDto
+): media is MovieSearchResultDto => media.media_type === MediaType.MOVIE;
+
+export const isBoth = (
+  media: MovieSearchResultDto | TVSearchResultDto | PersonSearchResultDto
+): media is MovieSearchResultDto | TVSearchResultDto =>
+  media.media_type === MediaType.MOVIE || media.media_type === MediaType.TV;
