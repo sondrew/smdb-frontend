@@ -181,6 +181,18 @@ export class MovieAndTVShowDetailsResponse {
       list: movies.concat(tvShows),
     };
   }
+
+  static toRecommendationList(
+    createList: CreateRecommendationListEntity,
+    listId: string
+  ): RecommendationList {
+    return {
+      id: listId,
+      listName: createList.listName,
+      listDescription: createList.listDescription,
+      list: createList.list,
+    } as RecommendationList;
+  }
 }
 
 export class MultipleMediaDetailResponses<T> {
