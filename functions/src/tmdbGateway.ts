@@ -106,8 +106,8 @@ export const getTVShowDetails = async (
   apiKey: string,
   withProviders: boolean = false
 ): Promise<ApiResponse<TVDetailsDto>> => {
-  const requestUrl = `${baseUrl}/tv/${tmdbId}?api_key=${apiKey}${
-    withProviders ? '&append_to_response=watch/providers' : ''
+  const requestUrl = `${baseUrl}/tv/${tmdbId}?api_key=${apiKey}$append_to_response=external_ids${
+    withProviders ? ',external_ids&watch/providers' : ''
   }`;
   console.log('get tv');
   return axios
