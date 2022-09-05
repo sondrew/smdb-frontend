@@ -2,13 +2,16 @@ import {
   ApiResponse,
   isMovie,
   isTVShow,
+  MovieAndTVShowDetailsResponse,
   MovieSearchResultDto,
   ResponseStatus,
   TMDbMultiSearchDto,
   TVSearchResultDto,
 } from './backendModels';
-import { CreateListRequest, MediaType, SearchItem } from '../../shared/models';
+import { MediaType, SearchItem } from '../../shared/models';
 import { getMovieAndTVShowDetails, searchMulti } from './tmdbGateway';
+import { saveRecommendationList } from './firestoreGateway';
+import { CreateListRequest } from '../../shared/requestModels';
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
 const FALLBACK_POST_URL =
@@ -24,6 +27,20 @@ export const searchMovieOrTV = async (query: string, apiKey: string): Promise<Se
     case ResponseStatus.OK:
       return mapAndFilterSearchResults(searchResult.data);
   }
+};
+
+export const createRecommendationList = async (createList: CreateListRequest, apiKey: string) => {
+  const movies = createList.list
+    .filter((media) => media.mediaType === MediaType.MOVIE)
+    .map((media) => media.tmdbId);
+  const tvShows = createList.list
+    .filter((media) => media.mediaType === MediaType.TV)
+    .map((media) => media.tmdbId);
+
+  const responses = await getMovieAndTVShowDetails(movies, tvShows, apiKey);
+  const recommendationList = responses.toCreateRecommendationListEntity(createList);
+  const listId = await saveRecommendationList(recommendationList);
+  return MovieAndTVShowDetailsResponse.toRecommendationList(recommendationList, listId);
 };
 
 const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] => {
