@@ -17,17 +17,23 @@ export interface SearchItem {
   originalTitle: string;
 }
 
-export interface CreateListRequest {
+export type RecommendationList = {
+  id: string;
   listName: string;
   listDescription: string | null;
-  list: CreateListItemRequest[];
-}
+  list: RecommendedMedia[];
+};
 
-export interface CreateListItemRequest {
-  tmdbId: number;
-  index: number;
+export type RecommendedMedia = {
+  id: number;
+  listIndex: number;
+  userRating: number | null;
+  userComment: string | null;
+  title: string;
+  originalTitle: string | null;
+  description: string | null;
   mediaType: MediaType;
-  userComment?: string;
-  userRating?: number | null;
-}
-
+  posterPath: string | null;
+  imdbPath: string | null;
+  genres: string[];
+};
