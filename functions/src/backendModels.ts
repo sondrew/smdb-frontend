@@ -1,10 +1,6 @@
-import {
-  CreateListRequest,
-  MediaDetails,
-  MediaType,
-  RecommendationList,
-} from '../../shared/models';
+import { MediaType, RecommendationList } from '../../shared/models';
 import { CreateRecommendationListEntity, RecommendedMediaEntity } from './entityModels';
+import { CreateListRequest } from '../../shared/requestModels';
 
 export enum ResponseStatus {
   OK = 'ok',
@@ -145,6 +141,46 @@ export class MovieAndTVShowDetailsResponse {
     this.tvShowResponses = tvShows;
   }
 
+  toCreateRecommendationListEntity(createList: CreateListRequest): CreateRecommendationListEntity {
+    const movies = this.movieResponses.getMediaData().map((movie) => {
+      const userInput = createList.list.find((item) => item.tmdbId === movie.id)!;
+      return {
+        id: movie.id,
+        listIndex: userInput.index,
+        userRating: userInput.userRating,
+        userComment: userInput.userComment,
+        title: movie.title,
+        originalTitle: movie.original_title,
+        description: movie.overview,
+        mediaType: MediaType.MOVIE,
+        posterPath: movie.poster_path ?? null,
+        imdbPath: movie.imdb_id ?? null,
+        genres: movie.genres.map((genre) => genre.name),
+      } as RecommendedMediaEntity;
+    });
+    const tvShows = this.tvShowResponses.getMediaData().map((tvShow) => {
+      const userInput = createList.list.find((item) => item.tmdbId === tvShow.id)!;
+      return {
+        id: tvShow.id,
+        listIndex: userInput.index,
+        userRating: userInput.userRating ?? null,
+        userComment: userInput.userComment ?? null,
+        title: tvShow.name,
+        originalTitle: tvShow.original_name,
+        description: tvShow.overview,
+        mediaType: MediaType.MOVIE,
+        posterPath: tvShow.poster_path ?? null,
+        imdbPath: tvShow?.external_ids?.imdb_id ?? null,
+        genres: tvShow.genres.length === 0 ? null : tvShow.genres.map((genre) => genre.name),
+      } as RecommendedMediaEntity;
+    });
+
+    return {
+      listName: createList.listName,
+      listDescription: createList.listDescription,
+      list: movies.concat(tvShows),
+    };
+  }
 }
 
 export class MultipleMediaDetailResponses<T> {
