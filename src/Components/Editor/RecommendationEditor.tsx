@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { RecommendationList } from '../../Models/BackendModels';
 import { SearchList } from '../../State/Atoms';
 import { Button, Container, Flex, Heading, Input } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CreateRecommendationList, RecommendedItem } from '../../Models/FrontendModels';
 import EditorList from './EditorList';
-import { createRecommendationList } from '../../State/DataFetch';
-import { SearchItem } from '../../../shared/models';
+import { RecommendationList, SearchItem } from '../../../shared/models';
+import { RecommendedItem } from '../../Models/FrontendModels';
+import { createRecommendationList } from '../../firebase';
+import { CreateListRequest } from '../../../shared/requestModels';
 
 const RecommendationEditor: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const RecommendationEditor: React.FC = () => {
     console.log('hit submit');
     // validate-
     if (listName.length > 0 && recommendationList.length > 0) {
-      const createList: CreateRecommendationList = {
+      const createList: CreateListRequest = {
         listName: listName,
         listDescription: listDescription,
         list: recommendationList.map((item, index) => ({
@@ -45,15 +45,13 @@ const RecommendationEditor: React.FC = () => {
       console.log({ createList });
 
       createRecommendationList(createList)
-        .then((res) => {
-          console.log({ res });
-
-          navigate(`/${res.id}`, {
-            state: res as RecommendationList,
+        .then((result) => {
+          navigate(`/${result.data.id}`, {
+            state: result.data as RecommendationList,
           });
         })
-        .catch((e) => {
-          console.log(e);
+        .catch((err) => {
+          console.log(err);
         });
     }
   };
