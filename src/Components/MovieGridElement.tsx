@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TMDbMovie } from '../Models/BackendModels';
 import { Box, Image } from '@chakra-ui/react';
 import Star from './Star';
@@ -11,7 +9,7 @@ interface MovieGridElementProps {
   toggleFavourite: (index: number) => void;
 }
 
-const MovieGridElement: React.FC<MovieGridElementProps> = ({ movie, toggleFavourite, index }) => {
+const MovieGridElement = ({ movie, toggleFavourite, index }: MovieGridElementProps) => {
   const fallbackPosterUrl: string =
     'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
 

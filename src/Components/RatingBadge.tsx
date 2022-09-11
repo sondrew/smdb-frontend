@@ -1,4 +1,3 @@
-import React from 'react';
 import { Badge, Box, Text } from '@chakra-ui/react';
 
 interface RatingBadgeProps {
@@ -8,7 +7,7 @@ interface RatingBadgeProps {
 
 const calculateRatingColor = (rating: number) => `hsla(${rating * 10}, 95%, 63%, 0.9)`;
 
-const RatingBadge: React.FC<RatingBadgeProps> = ({ rating, voteCount }) => {
+const RatingBadge = ({ rating, voteCount }: RatingBadgeProps) => {
   return (
     <Box display="flex" alignItems="center">
       <Badge

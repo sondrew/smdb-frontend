@@ -1,11 +1,9 @@
-import React from 'react';
-
 interface StarProps {
   favourite: Boolean;
   toggleFavourite: () => void;
 }
 
-const Star: React.FC<StarProps> = ({ favourite, toggleFavourite }) => {
+const Star = ({ favourite, toggleFavourite }: StarProps) => {
   return (
     <svg
       onClick={toggleFavourite}

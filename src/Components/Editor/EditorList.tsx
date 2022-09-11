@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { RecommendedItem } from '../../Models/FrontendModels';
 import { List } from '@chakra-ui/react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
@@ -9,7 +9,7 @@ interface EditorListProps {
   setListItems: Dispatch<SetStateAction<RecommendedItem[]>>;
 }
 
-const EditorList: React.FC<EditorListProps> = ({ listItems, setListItems }) => {
+const EditorList = ({ listItems, setListItems }: EditorListProps) => {
   const handleOnDragEnd = (result: DropResult) => {
     const { destination, source } = result;
     if (!!destination && !!source) {

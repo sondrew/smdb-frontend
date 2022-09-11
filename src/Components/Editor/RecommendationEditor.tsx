@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { SearchList } from '../../State/Atoms';
 import { Button, Container, Flex, Heading, Input } from '@chakra-ui/react';
@@ -9,7 +9,7 @@ import { RecommendedItem } from '../../Models/FrontendModels';
 import { createRecommendationList } from '../../firebase';
 import { CreateListRequest } from '../../../shared/requestModels';
 
-const RecommendationEditor: React.FC = () => {
+const RecommendationEditor = () => {
   const navigate = useNavigate();
   const [listName, setListName] = useState<string>('');
   const [listDescription, setListDescription] = useState<string>('');

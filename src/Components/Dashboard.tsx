@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useRecoilState } from 'recoil';
 import { Button, Heading, SimpleGrid } from '@chakra-ui/react';
@@ -8,7 +8,7 @@ import { getDiscoverMovies, getFavouriteMovies, saveMovie, unsaveMovie } from '.
 import { TMDbMovie } from '../Models/BackendModels';
 import MovieGridElement from './MovieGridElement';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const [discoverMovies, setDiscoverMovies] = useRecoilState<TMDbMovie[]>(DiscoverMovies);
 
   useEffect(() => {

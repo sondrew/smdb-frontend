@@ -1,4 +1,3 @@
-import React from 'react';
 import { Badge, Box, Flex, Image, Input, ListItem, Text } from '@chakra-ui/react';
 import { RecommendedItem } from '../../Models/FrontendModels';
 import { DraggableProvided } from 'react-beautiful-dnd';
@@ -10,12 +9,12 @@ interface EditorListItemProps {
   setItemComment: (index: number, comment: string) => void;
 }
 
-const EditorListItem: React.FC<EditorListItemProps> = ({
+const EditorListItem = ({
   item,
   index,
   draggableProvided,
   setItemComment,
-}) => {
+}: EditorListItemProps) => {
   const fallbackPosterUrl: string =
     'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
 

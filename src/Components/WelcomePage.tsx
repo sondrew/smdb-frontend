@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Badge, Box, Button, Flex, Heading, Image, Input, Text } from '@chakra-ui/react';
 import useDebounce from '../Hooks/useDebounce';
@@ -9,7 +9,7 @@ import useKeyPress from '../Hooks/useKeyPress';
 import { searchMoviesAndTV } from '../firebase';
 import { SearchItem } from '../../shared/models';
 
-const WelcomePage: React.FC = () => {
+const WelcomePage = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchItem[]>([]);
   const [searchFailed, setSearchFailed] = useState<boolean>(false);
