@@ -39,6 +39,9 @@ const ViewRecommendationList = () => {
       <Heading as="h1" size="md" pt={2} mb={10}>
         Recommendation list
       </Heading>
+      {recommendations === null && (
+        <h2>There's no recommendation list here! Go to our front page</h2>
+      )}
       {renderRecommendations && (
         <>
           <Heading as="h2" size="lg" mb={3} color="grey">
