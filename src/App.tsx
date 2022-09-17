@@ -21,7 +21,7 @@ function App() {
               <Route path="/favourites" element={<Dashboard />} />
               <Route path="/" element={<WelcomePage />} />
               <Route path="/edit" element={<RecommendationEditor />} />
-              <Route path="/l/*" element={<ViewRecommendationList />} />
+              <Route path="/l/:listId" element={<ViewRecommendationList />} />
             </Routes>
           </div>
         </ChakraProvider>
