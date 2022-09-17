@@ -4,6 +4,7 @@ export type CreateRecommendationListEntity = {
   listName: string;
   listDescription: string | null;
   list: RecommendedMediaEntity[];
+  createdAt: number;
 };
 
 export type RecommendedMediaEntity = RecommendedMedia;

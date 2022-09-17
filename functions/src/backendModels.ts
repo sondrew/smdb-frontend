@@ -179,6 +179,7 @@ export class MovieAndTVShowDetailsResponse {
       listName: createList.listName,
       listDescription: createList.listDescription,
       list: movies.concat(tvShows),
+      createdAt: Date.now(),
     };
   }
 
