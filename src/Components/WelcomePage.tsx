@@ -25,6 +25,14 @@ const WelcomePage = () => {
   const upPress = useKeyPress('ArrowUp', keypressRef);
   const enterPress = useKeyPress('Enter', keypressRef);
 
+  const addSelectedItemToRecommendationList = (item: SearchItem) => {
+    setSelectedSearchItem(null);
+    setSearchList((prevState) => [...prevState, item]);
+    setSearchResult([]);
+    setSearchQuery('');
+    inputSearchRef?.current?.focus();
+  };
+
   // Search for movie/show on debounced query change
   useEffect(() => {
     setSearchFailed(false);
@@ -49,45 +57,43 @@ const WelcomePage = () => {
     }
   }, [debouncedSearchQuery, searchResult.length]);
 
+  // Navigate in search list using up/down keys
   useEffect(() => {
-    if (searchResult.length && (downPress || upPress || enterPress)) {
+    if (searchResult.length && (downPress || upPress)) {
       if (selectedSearchItem === null) {
         if (downPress) setSelectedSearchItem(0);
         if (upPress) setSelectedSearchItem(searchResult.length - 1);
-      }
-      if (selectedSearchItem !== null) {
-        if (enterPress) addItemToRecommendationList(searchResult[selectedSearchItem]);
-        else if (downPress)
+      } else {
+        if (downPress) {
           setSelectedSearchItem((prevItem) =>
-            prevItem === null ? 0 : prevItem < searchResult.length ? prevItem + 1 : null
+            prevItem! < searchResult.length ? prevItem! + 1 : null
           );
-        // @ts-ignore
-        else if (upPress) setSelectedSearchItem((prevItem) => (prevItem > 0 ? prevItem - 1 : null));
-
-        // TODO: Scroll screen if navigating to list item outside viewport
+        } else if (upPress) {
+          setSelectedSearchItem((prevItem) => (prevItem! > 0 ? prevItem! - 1 : null));
+        }
       }
     }
-  }, [searchResult, downPress, upPress, enterPress]);
+    // TODO: Scroll screen if navigating to list item outside of viewport
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [downPress, searchResult.length, upPress]);
+
+  // Add selected search item to list when pressing enter key
+  useEffect(() => {
+    if (selectedSearchItem != null && enterPress) {
+      addSelectedItemToRecommendationList(searchResult[selectedSearchItem]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSearchItem, enterPress]);
 
   // https://ipapi.co/json/ get client country to get streaming providers for lists
-
-  const addItemToRecommendationList = (item: SearchItem) => {
-    setSearchList((prevState) => [...prevState, item]);
-    // check movie/show doesn't exist in list already?
-    setSearchResult([]);
-    setSearchQuery('');
-    inputSearchRef?.current?.focus();
-  };
-
-
   // TODO: handle search with no results - generally better search and request handling
+  // TODO: ping functions on website load to avoid cold start?
 
   return (
     <Box>
       <Heading pt={3} mb={6} textAlign="center">
         Create recommendations!
       </Heading>
-
       <Flex mt={20} justifyContent="center" ref={keypressRef}>
         <Box
           w={{
@@ -138,7 +144,7 @@ const WelcomePage = () => {
               <Box
                 onMouseEnter={() => setSelectedSearchItem(index)}
                 onMouseLeave={() => setSelectedSearchItem(null)}
-                onClick={() => addItemToRecommendationList(item)}
+                onClick={() => addSelectedItemToRecommendationList(item)}
                 border="1px"
                 borderColor="grey"
                 display="flex"
