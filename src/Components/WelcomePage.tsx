@@ -16,21 +16,23 @@ const WelcomePage = () => {
   const [searchList, setSearchList] = useRecoilState<SearchItem[]>(SearchList);
   const [selectedSearchItem, setSelectedSearchItem] = useState<number | null>(null);
 
-  const inputSearchRef = useRef<HTMLInputElement>(null);
   const debouncedSearchQuery = useDebounce<string>(searchQuery, 200);
 
+  const inputSearchRef = useRef<HTMLInputElement>(null);
   const keypressRef = useRef<HTMLDivElement>(null);
 
   const downPress = useKeyPress('ArrowDown', keypressRef);
   const upPress = useKeyPress('ArrowUp', keypressRef);
   const enterPress = useKeyPress('Enter', keypressRef);
 
+  // Search for movie/show on debounced query change
   useEffect(() => {
     setSearchFailed(false);
-    if (debouncedSearchQuery.length >= 2) {
+    if (debouncedSearchQuery.length > 2) {
       searchMoviesAndTV(debouncedSearchQuery)
         .then((data) => {
           setSearchResult(data.data);
+          setSelectedSearchItem(null);
         })
         .catch((e) => {
           console.error(e);
@@ -38,6 +40,14 @@ const WelcomePage = () => {
         });
     }
   }, [debouncedSearchQuery]);
+
+  // Remove search results and reset selected item if debounced query is < 2 characters
+  useEffect(() => {
+    if (debouncedSearchQuery.length <= 2 && searchResult.length > 0) {
+      setSelectedSearchItem(null);
+      setSearchResult([]);
+    }
+  }, [debouncedSearchQuery, searchResult.length]);
 
   useEffect(() => {
     if (searchResult.length && (downPress || upPress || enterPress)) {
