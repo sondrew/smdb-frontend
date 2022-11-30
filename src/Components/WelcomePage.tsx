@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Badge, Box, Button, Flex, Heading, Image, Input, Text } from '@chakra-ui/react';
 import useDebounce from '../Hooks/useDebounce';

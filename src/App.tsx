@@ -4,7 +4,6 @@ import { RecoilRoot } from 'recoil';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter } from 'react-router-dom';
 
-import Dashboard from './Components/Dashboard';
 import WelcomePage from './Components/WelcomePage';
 import './App.css';
 import customTheme from './customTheme';
@@ -18,7 +17,6 @@ function App() {
         <ChakraProvider theme={customTheme}>
           <div className="App">
             <Routes>
-              <Route path="/favourites" element={<Dashboard />} />
               <Route path="/" element={<WelcomePage />} />
               <Route path="/edit" element={<RecommendationEditor />} />
               <Route path="/l/:listId" element={<ViewRecommendationList />} />
