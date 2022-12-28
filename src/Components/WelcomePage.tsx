@@ -26,8 +26,13 @@ const WelcomePage = () => {
   const enterPress = useKeyPress('Enter', keypressRef);
 
   const addSelectedItemToRecommendationList = (item: SearchItem) => {
+    if (searchList.some((existing) => existing.id === item.id)) {
+      // TODO: Add notification/toast informing user that show/movie is already added
+      console.warn('Tried to add movie/tv show already added. Ignoring');
+    } else {
+      setSearchList((prevState) => [...prevState, item]);
+    }
     setSelectedSearchItem(null);
-    setSearchList((prevState) => [...prevState, item]);
     setSearchResult([]);
     setSearchQuery('');
     inputSearchRef?.current?.focus();
