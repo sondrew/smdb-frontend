@@ -45,23 +45,27 @@ export const searchMulti = (
 export const getMovieAndTVShowDetails = async (
   movieIds: number[],
   tvShowIds: number[],
-  apiKey: string
+  apiKey: string,
+  withProviders: boolean = false
 ) => {
-  const tvDetails = await getMultipleTVShowDetails(tvShowIds, apiKey);
-  const movieDetails = await getMultipleMoviesDetails(movieIds, apiKey);
+  const tvDetails = await getMultipleTVShowDetails(tvShowIds, apiKey, withProviders);
+  const movieDetails = await getMultipleMoviesDetails(movieIds, apiKey, withProviders);
 
   return new MovieAndTVShowDetailsResponse(movieDetails, tvDetails);
 };
 
 export const getMultipleTVShowDetails = async (
   tmdbIds: number[],
-  apiKey: string
+  apiKey: string,
+  withProviders: boolean = false
 ): Promise<MultipleMediaDetailResponses<TVDetailsDto>> => {
   if (tmdbIds.length === 0) {
     return MultipleMediaDetailResponses.returnEmptyResponse();
   }
 
-  const tvShowRequests = tmdbIds.map((tvShowId) => getTVShowDetails(tvShowId, apiKey));
+  const tvShowRequests = tmdbIds.map((tvShowId) =>
+    getTVShowDetails(tvShowId, apiKey, withProviders)
+  );
 
   return await axios
     .all([...tvShowRequests])
@@ -79,13 +83,14 @@ export const getMultipleTVShowDetails = async (
 
 export const getMultipleMoviesDetails = async (
   tmdbIds: number[],
-  apiKey: string
+  apiKey: string,
+  withProviders: boolean = false
 ): Promise<MultipleMediaDetailResponses<MovieDetailsDto>> => {
   if (tmdbIds.length === 0) {
     return MultipleMediaDetailResponses.returnEmptyResponse();
   }
 
-  const movieRequests = tmdbIds.map((tvShowId) => getMovieDetails(tvShowId, apiKey));
+  const movieRequests = tmdbIds.map((tvShowId) => getMovieDetails(tvShowId, apiKey, withProviders));
 
   return await axios
     .all([...movieRequests])
