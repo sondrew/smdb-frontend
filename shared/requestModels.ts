@@ -13,3 +13,8 @@ export interface CreateListItemRequest {
   userComment?: string;
   userRating?: number | null;
 }
+
+export interface GetProvidersForCountryRequest {
+  listId: string;
+  countryCode: string;
+}

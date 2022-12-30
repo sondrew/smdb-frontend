@@ -97,8 +97,7 @@ export type TVDetailsDto = {
   status: string;
   tagline: string;
   external_ids?: ExternalIdsDto;
-  //@JsonAlias("watch/providers")
-  //watch_providers: ?StreamResponseDto;
+  'watch/providers'?: any;
 };
 
 export type MovieDetailsDto = {
@@ -115,6 +114,7 @@ export type MovieDetailsDto = {
   genres: GenreDto[];
   video: Boolean;
   imdb_id?: string;
+  'watch/providers'?: any;
 };
 
 export type ExternalIdsDto = {
@@ -229,3 +229,9 @@ export const isBoth = (
   media: MovieSearchResultDto | TVSearchResultDto | PersonSearchResultDto
 ): media is MovieSearchResultDto | TVSearchResultDto =>
   media.media_type === MediaType.MOVIE || media.media_type === MediaType.TV;
+
+// todo: move this to own file domainModels and rename current to tmdbResponseModels
+export interface MediaIdsOfTypes {
+  movies: number[];
+  shows: number[];
+}

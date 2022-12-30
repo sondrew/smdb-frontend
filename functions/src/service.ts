@@ -2,6 +2,7 @@ import {
   ApiResponse,
   isMovie,
   isTVShow,
+  MediaIdsOfTypes,
   MovieAndTVShowDetailsResponse,
   MovieSearchResultDto,
   ResponseStatus,
@@ -9,8 +10,8 @@ import {
   TVSearchResultDto,
 } from './backendModels';
 import { MediaType, SearchItem } from '../../shared/models';
-import { getMovieAndTVShowDetails, searchMulti } from './tmdbGateway';
-import { saveRecommendationList } from './firestoreGateway';
+import { getMovieAndTVShowDetails, getMultipleMoviesDetails, searchMulti } from './tmdbGateway';
+import { getMediaItemsForList, saveRecommendationList } from './firestoreGateway';
 import { CreateListRequest } from '../../shared/requestModels';
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
@@ -41,6 +42,28 @@ export const createRecommendationList = async (createList: CreateListRequest, ap
   const recommendationList = responses.toCreateRecommendationListEntity(createList);
   const listId = await saveRecommendationList(recommendationList);
   return MovieAndTVShowDetailsResponse.toRecommendationList(recommendationList, listId);
+};
+
+export const getProvidersForCountry = async (
+  listId: string,
+  countryCode: string,
+  apiKey: string
+) => {
+  const mediaItems: MediaIdsOfTypes = await getMediaItemsForList(listId);
+  console.log('mediaItems', mediaItems);
+
+  const moviesAndShows = await getMovieAndTVShowDetails(
+    mediaItems.movies,
+    mediaItems.shows,
+    apiKey,
+    true
+  );
+
+  console.log('');
+  console.log('moviesAndShows');
+  console.log(moviesAndShows);
+
+  return mediaItems;
 };
 
 const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] => {
