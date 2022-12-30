@@ -4,7 +4,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import { connectFunctionsEmulator } from 'firebase/functions';
 import { RecommendationList, SearchItem } from '../shared/models';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
-import { CreateListRequest } from '../shared/requestModels';
+import { CreateListRequest, GetProvidersForCountryRequest } from '../shared/requestModels';
 //import { getStorage, ref } from "firebase/storage";
 //import { getAuth } from "firebase/auth";
 
@@ -42,3 +42,8 @@ export const createRecommendationList = httpsCallable<CreateListRequest, Recomme
   functions,
   'createRecommendationList'
 );
+
+export const getProvidersForCountry = httpsCallable<
+  GetProvidersForCountryRequest,
+  RecommendationList
+>(functions, 'getProvidersForCountry');
