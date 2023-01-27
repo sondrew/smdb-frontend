@@ -168,7 +168,7 @@ export class MovieAndTVShowDetailsResponse {
         title: tvShow.name,
         originalTitle: tvShow.original_name,
         description: tvShow.overview,
-        mediaType: MediaType.MOVIE,
+        mediaType: MediaType.TV,
         posterPath: tvShow.poster_path ?? null,
         imdbPath: tvShow?.external_ids?.imdb_id ?? null,
         genres: tvShow.genres.length === 0 ? null : tvShow.genres.map((genre) => genre.name),
