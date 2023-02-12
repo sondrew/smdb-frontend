@@ -4,9 +4,13 @@ import {
   isTVShow,
   MediaIdsOfTypes,
   MovieAndTVShowDetailsResponse,
+  MovieDetailsDto,
   MovieSearchResultDto,
   ResponseStatus,
+  ResponseSuccess,
+  StreamingCountryDetailsDto,
   TMDbMultiSearchDto,
+  TVDetailsDto,
   TVSearchResultDto,
 } from './backendModels';
 import { MediaType, SearchItem } from '../../shared/models';
@@ -62,8 +66,57 @@ export const getProvidersForCountry = async (
   console.log('');
   console.log('moviesAndShows');
   console.log(moviesAndShows);
+  console.log('\n\n\n===========================================\n\n\n');
+
+  printWatchProviders(moviesAndShows);
+
+  const watchProviderLogoBaseUrl = 'https://image.tmdb.org/t/p/original/';
 
   return mediaItems;
+};
+
+const printWatchProviders = (moviesAndShows: MovieAndTVShowDetailsResponse) => {
+  moviesAndShows.tvShowResponses.data.forEach((each: ResponseSuccess<TVDetailsDto>) => {
+    const results = each.data['watch/providers']?.results;
+
+    if (!!results) {
+      console.log(`\nStreaming options for ${each.data.name}`);
+      for (const key in results) {
+        const rentProviders = results[key]?.rent?.map((provider) => provider.provider_name) ?? [];
+        const buyProviders = results[key]?.buy?.map((provider) => provider.provider_name) ?? [];
+        const flatrateProviders =
+          results[key]?.flatrate?.map((provider) => provider.provider_name) ?? [];
+
+        console.log('\nCOUNTRY: ', key);
+        console.log(`${rentProviders.length} rent providers: ${rentProviders}`);
+        console.log(`${buyProviders.length} buy providers: ${buyProviders}`);
+        console.log(`${flatrateProviders.length} flat providers: ${flatrateProviders}`);
+      }
+    } else {
+      console.log(`\nNo streaming options for ${each.data.name}`);
+    }
+  });
+
+  moviesAndShows.movieResponses.data.forEach((each: ResponseSuccess<MovieDetailsDto>) => {
+    const results = each.data['watch/providers']?.results;
+
+    if (!!results) {
+      console.log(`\nStreaming options for ${each.data.title}`);
+      for (const key in results) {
+        const rentProviders = results[key]?.rent?.map((provider) => provider.provider_name) ?? [];
+        const buyProviders = results[key]?.buy?.map((provider) => provider.provider_name) ?? [];
+        const flatrateProviders =
+          results[key]?.flatrate?.map((provider) => provider.provider_name) ?? [];
+
+        console.log('\nCOUNTRY: ', key);
+        console.log(`${rentProviders.length} rent providers: ${rentProviders}`);
+        console.log(`${buyProviders.length} buy providers: ${buyProviders}`);
+        console.log(`${flatrateProviders.length} flat providers: ${flatrateProviders}`);
+      }
+    } else {
+      console.log(`\nNo streaming options for ${each.data.title}`);
+    }
+  });
 };
 
 const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] => {
