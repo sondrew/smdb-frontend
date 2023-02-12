@@ -191,10 +191,30 @@ export class MovieAndTVShowDetailsResponse {
       id: listId,
       listName: createList.listName,
       listDescription: createList.listDescription,
-      list: createList.list,
+      list: this.toListWithFullPosterUrl(createList.list),
     } as RecommendationList;
   }
+
+  static toListWithFullPosterUrl(list: RecommendedMedia[]): RecommendedMedia[] {
+    return list.map(
+      (media: RecommendedMedia) =>
+        ({
+          ...media,
+          posterPath: getPosterUrl(media.posterPath),
+        } as RecommendedMedia)
+    );
+  }
 }
+
+const FALLBACK_POST_URL =
+  'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
+const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
+const getPosterUrl = (path: string | null): string => {
+  console.log('posterPath', path);
+  if (path !== null) return `${POSTER_BASE_URL}${path}`;
+  else return FALLBACK_POST_URL;
+};
 
 export class MultipleMediaDetailResponses<T> {
   status: ResponseStatus;
