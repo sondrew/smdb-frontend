@@ -9,14 +9,26 @@ import {
   ResponseStatus,
   ResponseSuccess,
   StreamingCountryDetailsDto,
+  StreamingOptionDto,
   TMDbMultiSearchDto,
   TVDetailsDto,
   TVSearchResultDto,
+  WatchProviders,
 } from './backendModels';
 import { MediaType, SearchItem } from '../../shared/models';
 import { getMovieAndTVShowDetails, getMultipleMoviesDetails, searchMulti } from './tmdbGateway';
-import { getMediaItemsForList, saveRecommendationList } from './firestoreGateway';
+import {
+  getMediaItemsForList,
+  saveWatchProvidersToDb,
+  saveRecommendationList,
+} from './firestoreGateway';
 import { CreateListRequest } from '../../shared/requestModels';
+import {
+  CountryProvidersEntity,
+  CreateMediaProvidersListEntity,
+  StreamingOptionEntity,
+} from './entityModels';
+import { Timestamp } from 'firebase-admin/firestore';
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
 const FALLBACK_POST_URL =
@@ -45,6 +57,7 @@ export const createRecommendationList = async (createList: CreateListRequest, ap
   const responses = await getMovieAndTVShowDetails(movies, tvShows, apiKey);
   const recommendationList = responses.toCreateRecommendationListEntity(createList);
   const listId = await saveRecommendationList(recommendationList);
+  // TODO: Save watch providers to db
   return MovieAndTVShowDetailsResponse.toRecommendationList(recommendationList, listId);
 };
 
@@ -68,55 +81,114 @@ export const getProvidersForCountry = async (
   console.log(moviesAndShows);
   console.log('\n\n\n===========================================\n\n\n');
 
-  printWatchProviders(moviesAndShows);
+  //printWatchProviders(moviesAndShows);
+
+  // TODO: Move this to when creating recommendation list
+  await saveWatchProviders(moviesAndShows);
 
   const watchProviderLogoBaseUrl = 'https://image.tmdb.org/t/p/original/';
 
   return mediaItems;
 };
 
+const saveWatchProviders = async (moviesAndShows: MovieAndTVShowDetailsResponse) => {
+  const now = Timestamp.now();
+
+  const mapMediaDetailsToProviderList = (
+    mediaItems: ResponseSuccess<MovieDetailsDto | TVDetailsDto>[]
+  ): CreateMediaProvidersListEntity[] => {
+    return mediaItems.map((mediaItem: ResponseSuccess<MovieDetailsDto | TVDetailsDto>) => {
+      const countries = mediaItem.data['watch/providers']?.results;
+      const providers: CreateMediaProvidersListEntity = {
+        id: String(mediaItem.data.id),
+        lastUpdated: now,
+        countries: !!countries ? createCountryProvidersModel(countries) : null, // set to null for media items without providers
+      };
+      return providers;
+    });
+  };
+
+  const createCountryProvidersModel = (media: {
+    [countryCode: string]: StreamingCountryDetailsDto;
+  }): { [countryCode: string]: CountryProvidersEntity } => {
+    const countryCodes = Object.keys(media);
+    const countryProviderMap: { [countryCode: string]: CountryProvidersEntity } = {};
+
+    countryCodes.forEach((countryCode) => {
+      const countryProviders = media[countryCode];
+      countryProviderMap[countryCode] = {
+        link: countryProviders?.link ?? null,
+        flatrate: streamingOptionDtoToEntity(countryProviders?.flatrate),
+        rent: streamingOptionDtoToEntity(countryProviders?.rent),
+        buy: streamingOptionDtoToEntity(countryProviders?.buy),
+      };
+    });
+
+    return countryProviderMap;
+  };
+
+  const streamingOptionDtoToEntity = (
+    countries?: StreamingOptionDto[]
+  ): StreamingOptionEntity[] => {
+    if (!countries || countries.length === 0) return [];
+    return countries.map((country: StreamingOptionDto) => ({
+      displayPriority: country.display_priority,
+      logoPath: country.logo_path,
+      providerId: country.provider_id,
+      providerName: country.provider_name,
+    }));
+  };
+
+  /*
+  Currently I've chosen to store all movies/tv shows even though they don't have known watch providers
+  Will take new look at best way of storing/retrieving when making functionality to get providers
+  in the frontend for the whole list and ways of dealing with movies/shows that has no providers
+
+  const moviesWithProviders = moviesAndShows.movieResponses.data.filter(
+    (movie: ResponseSuccess<MovieDetailsDto>) => !!movie.data['watch/providers']?.results
+  );
+
+  const tvShowsWithProviders = moviesAndShows.tvShowResponses.data.filter(
+    (tvShow: ResponseSuccess<TVDetailsDto>) => !!tvShow.data['watch/providers']?.results
+  );
+   */
+
+  const movieProviders = mapMediaDetailsToProviderList(moviesAndShows.movieResponses.data);
+  const tvShowProviders = mapMediaDetailsToProviderList(moviesAndShows.tvShowResponses.data);
+
+  await saveWatchProvidersToDb(movieProviders, tvShowProviders)
+    .then(() => console.log('saveMediaProviders done!'))
+    .catch((err) => console.error('saveMediaProviders error:,', err));
+};
+
 const printWatchProviders = (moviesAndShows: MovieAndTVShowDetailsResponse) => {
-  moviesAndShows.tvShowResponses.data.forEach((each: ResponseSuccess<TVDetailsDto>) => {
-    const results = each.data['watch/providers']?.results;
-
+  const printCountryProvidersPerMediaItem = (mediaName: string, watchProvider?: WatchProviders) => {
+    const results = watchProvider?.results;
     if (!!results) {
-      console.log(`\nStreaming options for ${each.data.name}`);
+      console.log(`\nStreaming options for ${mediaName}`);
       for (const key in results) {
         const rentProviders = results[key]?.rent?.map((provider) => provider.provider_name) ?? [];
         const buyProviders = results[key]?.buy?.map((provider) => provider.provider_name) ?? [];
         const flatrateProviders =
           results[key]?.flatrate?.map((provider) => provider.provider_name) ?? [];
 
-        console.log('\nCOUNTRY: ', key);
+        console.log('\nCOUNTRY CODE:', key);
         console.log(`${rentProviders.length} rent providers: ${rentProviders}`);
         console.log(`${buyProviders.length} buy providers: ${buyProviders}`);
         console.log(`${flatrateProviders.length} flat providers: ${flatrateProviders}`);
       }
     } else {
-      console.log(`\nNo streaming options for ${each.data.name}`);
+      console.log(`\nNo streaming options for ${mediaName}`);
     }
-  });
+  };
 
-  moviesAndShows.movieResponses.data.forEach((each: ResponseSuccess<MovieDetailsDto>) => {
-    const results = each.data['watch/providers']?.results;
+  moviesAndShows.tvShowResponses.data.forEach((each: ResponseSuccess<TVDetailsDto>) =>
+    printCountryProvidersPerMediaItem(each.data.name, each.data['watch/providers'])
+  );
 
-    if (!!results) {
-      console.log(`\nStreaming options for ${each.data.title}`);
-      for (const key in results) {
-        const rentProviders = results[key]?.rent?.map((provider) => provider.provider_name) ?? [];
-        const buyProviders = results[key]?.buy?.map((provider) => provider.provider_name) ?? [];
-        const flatrateProviders =
-          results[key]?.flatrate?.map((provider) => provider.provider_name) ?? [];
-
-        console.log('\nCOUNTRY: ', key);
-        console.log(`${rentProviders.length} rent providers: ${rentProviders}`);
-        console.log(`${buyProviders.length} buy providers: ${buyProviders}`);
-        console.log(`${flatrateProviders.length} flat providers: ${flatrateProviders}`);
-      }
-    } else {
-      console.log(`\nNo streaming options for ${each.data.title}`);
-    }
-  });
+  moviesAndShows.movieResponses.data.forEach((each: ResponseSuccess<MovieDetailsDto>) =>
+    printCountryProvidersPerMediaItem(each.data.title, each.data['watch/providers'])
+  );
 };
 
 const mapAndFilterSearchResults = (response: TMDbMultiSearchDto): SearchItem[] => {

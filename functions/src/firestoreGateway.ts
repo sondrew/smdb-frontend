@@ -15,7 +15,7 @@ export const saveRecommendationList = async (
   return addList.id;
 };
 
-export const saveWatchProviders = async (
+export const saveWatchProvidersToDb = async (
   movieList: CreateMediaProvidersListEntity[],
   tvList: CreateMediaProvidersListEntity[]
 ) => {
