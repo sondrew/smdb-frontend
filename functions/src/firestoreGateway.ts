@@ -1,4 +1,4 @@
-import { CreateRecommendationListEntity } from './entityModels';
+import { CreateMediaProvidersListEntity, CreateRecommendationListEntity } from './entityModels';
 import { MediaIdsOfTypes } from './backendModels';
 
 const admin = require('firebase-admin');
@@ -13,6 +13,31 @@ export const saveRecommendationList = async (
 ): Promise<string> => {
   const addList = await db.collection('recommendationLists').add(list);
   return addList.id;
+};
+
+export const saveWatchProviders = async (
+  movieList: CreateMediaProvidersListEntity[],
+  tvList: CreateMediaProvidersListEntity[]
+) => {
+  const batch = db.batch();
+
+  movieList.forEach((doc) => {
+    batch.set(db.collection('movieProviders').doc(doc.id), doc, { merge: false });
+  });
+
+  tvList.forEach((doc) => {
+    batch.set(db.collection('tvProviders').doc(doc.id), doc, { merge: false });
+  });
+
+  batch
+    .commit()
+    .then(() => {
+      // result: firestore.WriteResult[]
+      console.log('saveMediaProviders: Successfully upserted watch providers to db');
+    })
+    .catch((err: any) => {
+      console.error('saveMediaProviders: Failed upserting watch providers to db, ', err);
+    });
 };
 
 export const getMediaItemsForList = async (listId: string): Promise<MediaIdsOfTypes> => {
