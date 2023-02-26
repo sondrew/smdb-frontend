@@ -26,6 +26,7 @@ Typescript, React, Firebase (firestore, hosting, callable functions, secrets), C
 - Loaders when awaiting response?
   - Creating list
   - Checking providers, etc
+  - Viewing recommendation list
 - Show original title when differing from english one?
 - Make poster images same aspect ratio/fit in same box
 - Better way to handle if movies/shows are available from provider - or is a request for each media needed?
@@ -33,6 +34,9 @@ Typescript, React, Firebase (firestore, hosting, callable functions, secrets), C
 - Add optional name of submitter
 - Show/hide toggle media description
 - Create imdb links to shows/movies when viewing list
+- Check internet connection - don't load images for all search items (or load in lower resolution) for bad connection. Lower resolution when viewing lists with poor connection
+- Show small info box when trying to add duplicate, that item was ignored
+- Consider don't showing composite providers that offer other providers as part of their service? E.g. Strim might show as provider for HBO shows
 
 ## Also store?
 - Original language/spoken language?

@@ -1,4 +1,4 @@
-import { MediaType, RecommendationList } from '../../shared/models';
+import { MediaType, RecommendationList, RecommendedMedia } from '../../shared/models';
 import { CreateRecommendationListEntity, RecommendedMediaEntity } from './entityModels';
 import { CreateListRequest } from '../../shared/requestModels';
 
@@ -97,7 +97,7 @@ export type TVDetailsDto = {
   status: string;
   tagline: string;
   external_ids?: ExternalIdsDto;
-  'watch/providers'?: any;
+  'watch/providers'?: WatchProviders;
 };
 
 export type MovieDetailsDto = {
@@ -114,7 +114,25 @@ export type MovieDetailsDto = {
   genres: GenreDto[];
   video: Boolean;
   imdb_id?: string;
-  'watch/providers'?: any;
+  'watch/providers'?: WatchProviders;
+};
+
+export interface WatchProviders {
+  results: { [key: string]: StreamingCountryDetailsDto };
+}
+
+export type StreamingCountryDetailsDto = {
+  link?: string;
+  flatrate?: StreamingOptionDto[];
+  rent?: StreamingOptionDto[];
+  buy?: StreamingOptionDto[];
+};
+
+export type StreamingOptionDto = {
+  display_priority: number;
+  logo_path: string;
+  provider_id: number;
+  provider_name: string;
 };
 
 export type ExternalIdsDto = {
