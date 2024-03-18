@@ -4,5 +4,12 @@ service cloud.firestore {
         match /recommendationLists/{list} {
             allow read;
         }
+        match /tvShowProviders/{list} {
+            allow read;
+        }
+        match /movieProviders/{list} {
+            allow read;
+        }
     }
+
 }
