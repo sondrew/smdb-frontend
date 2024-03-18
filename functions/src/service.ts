@@ -15,7 +15,12 @@ import {
   TVSearchResultDto,
   WatchProviders,
 } from './backendModels';
-import { MediaType, SearchItem } from '../../shared/models';
+import {
+  CountriesWithWatchProvider,
+  MediaType,
+  SearchItem,
+  WatchProvider,
+} from '../../shared/models';
 import { getMovieAndTVShowDetails, getMultipleMoviesDetails, searchMulti } from './tmdbGateway';
 import {
   getMediaItemsForList,
@@ -23,17 +28,13 @@ import {
   saveRecommendationList,
 } from './firestoreGateway';
 import { CreateListRequest } from '../../shared/requestModels';
-import {
-  CountryProvidersEntity,
-  CreateMediaProvidersListEntity,
-  StreamingOptionEntity,
-} from './entityModels';
+import { CreateMediaProvidersListEntity } from './entityModels';
 import { Timestamp } from 'firebase-admin/firestore';
 
 //const IMDB_BASE_URL = "https://www.imdb.com/title/"
 const FALLBACK_POST_URL =
-  'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
-const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+  'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg'; // TODO: Change this
+const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500'; // TODO: Change to use a lower resolution for faster loading and less data usage?
 
 export const searchMovieOrTV = async (query: string, apiKey: string): Promise<SearchItem[]> => {
   const searchResult: ApiResponse<TMDbMultiSearchDto> = await searchMulti(query, apiKey);
@@ -50,13 +51,19 @@ export const createRecommendationList = async (createList: CreateListRequest, ap
   const movies = createList.list
     .filter((media) => media.mediaType === MediaType.MOVIE)
     .map((media) => media.tmdbId);
+  console.log('movies', movies);
   const tvShows = createList.list
     .filter((media) => media.mediaType === MediaType.TV)
     .map((media) => media.tmdbId);
-
-  const responses = await getMovieAndTVShowDetails(movies, tvShows, apiKey);
+  console.log('tvShows', tvShows);
+  const responses = await getMovieAndTVShowDetails(movies, tvShows, true, apiKey);
+  console.log('responses', responses);
   const recommendationList = responses.toCreateRecommendationListEntity(createList);
+  console.log('recommendationList', recommendationList);
   const listId = await saveRecommendationList(recommendationList);
+  console.log('got listId:', listId);
+  console.log('Saving watch providers to db');
+  await saveWatchProviders(responses);
   // TODO: Save watch providers to db
   return MovieAndTVShowDetailsResponse.toRecommendationList(recommendationList, listId);
 };
@@ -72,8 +79,8 @@ export const getProvidersForCountry = async (
   const moviesAndShows = await getMovieAndTVShowDetails(
     mediaItems.movies,
     mediaItems.shows,
-    apiKey,
-    true
+    true,
+    apiKey
   );
 
   console.log('');
@@ -110,9 +117,10 @@ const saveWatchProviders = async (moviesAndShows: MovieAndTVShowDetailsResponse)
 
   const createCountryProvidersModel = (media: {
     [countryCode: string]: StreamingCountryDetailsDto;
-  }): { [countryCode: string]: CountryProvidersEntity } => {
+  }): CountriesWithWatchProvider | null => {
     const countryCodes = Object.keys(media);
-    const countryProviderMap: { [countryCode: string]: CountryProvidersEntity } = {};
+    if (countryCodes.length === 0) return null;
+    const countryProviderMap: CountriesWithWatchProvider = {};
 
     countryCodes.forEach((countryCode) => {
       const countryProviders = media[countryCode];
@@ -127,9 +135,7 @@ const saveWatchProviders = async (moviesAndShows: MovieAndTVShowDetailsResponse)
     return countryProviderMap;
   };
 
-  const streamingOptionDtoToEntity = (
-    countries?: StreamingOptionDto[]
-  ): StreamingOptionEntity[] => {
+  const streamingOptionDtoToEntity = (countries?: StreamingOptionDto[]): WatchProvider[] => {
     if (!countries || countries.length === 0) return [];
     return countries.map((country: StreamingOptionDto) => ({
       displayPriority: country.display_priority,
