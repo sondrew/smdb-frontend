@@ -45,8 +45,8 @@ export const searchMulti = (
 export const getMovieAndTVShowDetails = async (
   movieIds: number[],
   tvShowIds: number[],
-  apiKey: string,
-  withProviders: boolean = false
+  withProviders: boolean = false,
+  apiKey: string
 ) => {
   const tvDetails = await getMultipleTVShowDetails(tvShowIds, apiKey, withProviders);
   const movieDetails = await getMultipleMoviesDetails(movieIds, apiKey, withProviders);
@@ -116,7 +116,7 @@ export const getTVShowDetails = async (
   //}`;
 
   const requestUrl = `${baseUrl}/tv/${tmdbId}?api_key=${apiKey}${
-    withProviders ? '&append_to_response=watch/providers' : ''
+    withProviders ? '&append_to_response=watch/providers,external_id' : ''
   }`;
   console.log(requestUrl);
   return axios
@@ -147,7 +147,7 @@ export const getMovieDetails = (
   withProviders: boolean = false
 ): Promise<ApiResponse<MovieDetailsDto>> => {
   const requestUrl = `${baseUrl}/movie/${tmdbId}?api_key=${apiKey}${
-    withProviders ? '&append_to_response=watch/providers' : ''
+    withProviders ? '&append_to_response=watch/providers,external_id' : ''
   }`;
 
   return axios
