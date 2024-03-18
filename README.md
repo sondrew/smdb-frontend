@@ -37,6 +37,8 @@ Typescript, React, Firebase (firestore, hosting, callable functions, secrets), C
 - Check internet connection - don't load images for all search items (or load in lower resolution) for bad connection. Lower resolution when viewing lists with poor connection
 - Show small info box when trying to add duplicate, that item was ignored
 - Consider don't showing composite providers that offer other providers as part of their service? E.g. Strim might show as provider for HBO shows
+- Automatically or manually let user set tags genre tags or similar for their lists (either deduce by most reoccuring genres or let user decide by suggestions)
+- Fix numbering of recommendation list (displays in wrong order after creating list)
 
 ## Also store?
 - Original language/spoken language?

@@ -23,7 +23,7 @@ const useKeyPress = (targetKey: string, ref: RefObject<HTMLDivElement>) => {
       window.removeEventListener('keydown', downHandler);
       window.removeEventListener('keyup', upHandler);
     };
-  }, [ref]);
+  }, [ref, targetKey]);
 
   return keyPressed;
 };

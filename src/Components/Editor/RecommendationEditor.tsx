@@ -21,10 +21,13 @@ const RecommendationEditor = () => {
       mediaType: item.mediaType,
       releaseDate: item.releaseDate,
       posterUrl: item.posterUrl ?? null,
-      userComment: '',
-      userRating: null,
+      userComment: '', // set to null if not initialized
+      userRating: null, // do something with this
     }))
   );
+  //refaktorer use effect
+  // skriv om til create recommencation list entity i backend uten ID og recommendation list med id i shared
+  // fiks firestore rules til skrive function og lese frontend, men kun IDen man står på
 
   const submitRecommendationList = () => {
     console.log('hit submit');

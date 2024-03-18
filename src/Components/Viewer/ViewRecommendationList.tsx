@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Container, Heading, Text } from '@chakra-ui/react';
-import { RecommendationList } from '../../../shared/models';
+import { Box, Button, Container, Heading, Text } from '@chakra-ui/react';
 import { getRecommendationList } from '../../firestore';
 import ViewRecommendationListItem from './ViewRecommendationListItem';
+import { RecommendationList } from '../../../shared/models';
 
 const ViewRecommendationList = () => {
   const { state } = useLocation(); // get recommendation list right after creation
@@ -12,7 +12,7 @@ const ViewRecommendationList = () => {
 
   const [recommendations, setRecommendations] = useState<RecommendationList | null>(
     state as RecommendationList
-  ); // TODO: Differentiatie between loading list and it not existing
+  ); // TODO: Differentiate between loading list and it not existing
   useEffect(() => {
     console.log('USE EFFECT');
     if (recommendations == null && !!listId) {
@@ -21,6 +21,9 @@ const ViewRecommendationList = () => {
       console.log('did not pass recommendation list prop, retrieving');
       getRecommendationList(listId)
         .then((res) => {
+          console.log('');
+          console.log('res');
+          console.log(res);
           setRecommendations(res);
         })
         .catch(() => {
