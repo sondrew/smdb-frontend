@@ -3,11 +3,14 @@ import { createRecommendationList, getProvidersForCountry, searchMovieOrTV } fro
 import { SearchItem } from '../../shared/models';
 import { CallableContext } from 'firebase-functions/lib/common/providers/https';
 import { CreateListRequest, GetProvidersForCountryRequest } from '../../shared/requestModels';
+// All available logging functions
+import { log, info, debug, warn, error, write } from 'firebase-functions/logger';
 
 exports.searchMoviesAndTV = functions
   .region('europe-west1')
   .runWith({ secrets: ['TMDB_API_KEY'] })
   .https.onCall(async (query: string, context: CallableContext): Promise<SearchItem[]> => {
+    debug('searchMoviesAndTV', query);
     returnErrorIfNotVerified(context);
 
     return await searchMovieOrTV(query, process.env.TMDB_API_KEY ?? '');
@@ -41,6 +44,7 @@ exports.getProvidersForCountry = functions
 
 const returnErrorIfNotVerified = (context: CallableContext) => {
   if (context.app == undefined) {
+    warn('Unverified request to a callable function received', context);
     console.warn('Unverified request to a callable function received');
     console.log(context);
     throw new functions.https.HttpsError(
