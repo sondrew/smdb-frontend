@@ -1,4 +1,8 @@
-import { RecommendedMedia } from '../../shared/models';
+import {
+  CountriesWithWatchProvider,
+  RecommendationList,
+  RecommendedMedia,
+} from '../../shared/models';
 import { Timestamp } from 'firebase-admin/firestore';
 
 export type CreateRecommendationListEntity = {
@@ -10,10 +14,13 @@ export type CreateRecommendationListEntity = {
 
 export type RecommendedMediaEntity = RecommendedMedia;
 
+const recommendedMediaToEntity = (domain: RecommendedMedia): RecommendedMediaEntity =>
+  domain as RecommendedMediaEntity;
+
 export type CreateMediaProvidersListEntity = {
   id: string;
   lastUpdated: Timestamp;
-  countries: { [countryCode: string]: CountryProvidersEntity } | null;
+  countries: CountriesWithWatchProvider;
 };
 
 export type CountryProvidersEntity = {
