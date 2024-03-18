@@ -61,6 +61,9 @@ const EditorListItem = ({
           </Text>
           <Input
             onChange={(event) => setItemComment(index, event.target.value)}
+            type="text"
+            autoComplete="off"
+            aria-autocomplete="none"
             pl={1}
             ml={2}
             value={item.userComment}

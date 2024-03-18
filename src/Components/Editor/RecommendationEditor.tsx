@@ -77,6 +77,8 @@ const RecommendationEditor = () => {
             value={listName}
             fontSize={'x-large'}
             variant="flushed"
+            borderBottom="1px solid black"
+            _hover={{ color: 'green' }}
             size="lg"
             placeholder="Name of list"
             mb={5}

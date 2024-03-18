@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Badge, Box, Button, Flex, Heading, Image, Input, Text } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Image,
+  Input,
+  OrderedList,
+  ListItem,
+  Text,
+} from '@chakra-ui/react';
 import useDebounce from '../Hooks/useDebounce';
 import { useRecoilState } from 'recoil';
 import { SearchList } from '../State/Atoms';
@@ -113,20 +124,25 @@ const WelcomePage = () => {
           }}
         >
           <Box my={10}>
+            {' '}
+            {/* Move added recommendations to under search bar, so the search bar i staticly placed? */}
             {searchList.length > 0 && (
               <>
                 <Heading as="h5" size="sm">
                   Recommendations added:
                 </Heading>
-                <ol>
+                <OrderedList aria-live="polite">
                   {searchList.map((listItem) => (
-                    <li key={listItem.id}>{listItem.title}</li>
+                    <ListItem key={listItem.id}>{listItem.title}</ListItem>
                   ))}
-                </ol>
+                </OrderedList>
               </>
             )}
           </Box>
           <Input
+            type="search"
+            autoComplete="off"
+            aria-autocomplete="none"
             onChange={(event) => setSearchQuery(event.target.value)}
             pl={5}
             value={searchQuery}
