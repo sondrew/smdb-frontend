@@ -19,7 +19,11 @@
     "isolatedModules": true,
     "noUnusedLocals": false,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    }
   },
   "include": [
     "src"
