@@ -48,15 +48,11 @@ export const searchMovieOrTV = async (query: string, apiKey: string): Promise<Se
 };
 
 export const createRecommendationList = async (createList: CreateListRequest, apiKey: string) => {
-  const movies = createList.list
-    .filter((media) => media.mediaType === MediaType.MOVIE)
-    .map((media) => media.tmdbId);
-  console.log('movies', movies);
-  const tvShows = createList.list
-    .filter((media) => media.mediaType === MediaType.TV)
-    .map((media) => media.tmdbId);
-  console.log('tvShows', tvShows);
-  const responses = await getMovieAndTVShowDetails(movies, tvShows, true, apiKey);
+  const [movieIds, tvShowIds] = splitMoviesAndShows(createList);
+  console.log('movie ids', movieIds);
+  console.log('tv show ids', tvShowIds);
+
+  const responses = await getMovieAndTVShowDetails(movieIds, tvShowIds, true, apiKey);
   console.log('responses', responses);
   const recommendationList = responses.toCreateRecommendationListEntity(createList);
   console.log('recommendationList', recommendationList);
@@ -66,6 +62,18 @@ export const createRecommendationList = async (createList: CreateListRequest, ap
   await saveWatchProviders(responses);
   // TODO: Save watch providers to db
   return MovieAndTVShowDetailsResponse.toRecommendationList(recommendationList, listId);
+};
+
+const splitMoviesAndShows = (createList: CreateListRequest): number[][] => {
+  const movies = createList.list
+    .filter((media) => media.mediaType === MediaType.MOVIE)
+    .map((media) => media.tmdbId);
+  console.log('movies', movies);
+  const tvShows = createList.list
+    .filter((media) => media.mediaType === MediaType.TV)
+    .map((media) => media.tmdbId);
+
+  return [movies, tvShows];
 };
 
 export const getProvidersForCountry = async (
