@@ -1,8 +1,14 @@
-import { RecommendedMedia } from '../../../shared/models';
+import { RecommendedMedia, WatchProvider } from '../../../shared/models';
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
-const ViewRecommendationListItem = ({ item }: { item: RecommendedMedia }) => {
+const ViewRecommendationListItem = ({
+  item,
+  countryCode,
+}: {
+  item: RecommendedMedia;
+  countryCode: string | null | undefined;
+}) => {
   const [showDescription, setShowDescription] = useState<boolean>(false);
   return (
     <Box key={item.id} m={1} border="1px solid yellow">

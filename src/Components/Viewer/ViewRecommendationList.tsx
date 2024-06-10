@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { Box, Button, Container, Heading, Text } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
+import { Box, Container, Heading, Text } from '@chakra-ui/react';
 import { getRecommendationList } from '../../firestore';
 import ViewRecommendationListItem from './ViewRecommendationListItem';
 import { RecommendationList } from '../../../shared/models';
 import { getListWithProviders, getProvidersForCountry } from '../../firebase';
 import { GetProvidersForCountryRequest } from '../../../shared/requestModels';
+import { getClientCountryCode } from '../../httpClient';
 
 const ViewRecommendationList = () => {
   //const { state } = useLocation(); // get recommendation list right after creation // TODO: change this to fetch anyhow, as we want providers as well
@@ -15,14 +16,24 @@ const ViewRecommendationList = () => {
   const [recommendations, setRecommendations] = useState<
     RecommendationList | 'loading' | 'missing' | null
   >(null);
+  const [countryCode, setCountryCode] = useState<string | null | undefined>(null);
+
   useEffect(() => {
+    if (countryCode == null) {
+      console.log('countryCode is null, fetching');
+      getClientCountryCode().then((code) => {
+        console.log('countryCode', code);
+        setCountryCode(code);
+      });
+    }
+
     console.log('Checking if list should be fetched. current state:', recommendations);
     if (recommendations == null && !!listId) {
       setRecommendations('loading');
       //fetchRecommendationListUsingFirestoreClient();
       getRecommendationListUsingFunction();
     } else {
-      console.log('Recommendation list is missing or already loading');
+      console.log('Recommendation list is already fetched, missing or loading');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -90,8 +101,8 @@ const ViewRecommendationList = () => {
             </Text>
           )}
           <Box mt={8}>
-            {recommendations.list.map((item) => (
-              <ViewRecommendationListItem key={item.id} item={item} />
+            {recommendations.list.map((item, index) => (
+              <ViewRecommendationListItem key={item.id} item={item} countryCode={countryCode} />
             ))}
           </Box>
         </Box>
