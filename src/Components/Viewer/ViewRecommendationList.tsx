@@ -4,6 +4,8 @@ import { Box, Button, Container, Heading, Text } from '@chakra-ui/react';
 import { getRecommendationList } from '../../firestore';
 import ViewRecommendationListItem from './ViewRecommendationListItem';
 import { RecommendationList } from '../../../shared/models';
+import { getListWithProviders, getProvidersForCountry } from '../../firebase';
+import { GetProvidersForCountryRequest } from '../../../shared/requestModels';
 
 const ViewRecommendationList = () => {
   const { state } = useLocation(); // get recommendation list right after creation
@@ -16,14 +18,30 @@ const ViewRecommendationList = () => {
   useEffect(() => {
     console.log('USE EFFECT');
     if (recommendations == null && !!listId) {
+      //fetchRecommendationListUsingFirestoreClient();
+      getRecommendationListUsingFunction();
+    } else {
+      console.log('sent recommendation list as prop, not retrieving');
+      console.log({ recommendations });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // remove result list when query is removed
+  // out of focus fjerne listen, in focus gå tilbake
+
+  const fetchRecommendationListUsingFirestoreClient = () => {
+    if (recommendations == null && !!listId) {
       // TODO: validate and sanitize id, so that it does not request on all random stuff that is not a valid id
       // alphanumeric 8 characters
       console.log('did not pass recommendation list prop, retrieving');
       getRecommendationList(listId)
         .then((res) => {
           console.log('');
+          console.log('');
           console.log('res');
           console.log(res);
+          // TODO: Sort list here or in backend - thought I'd done this already?
           setRecommendations(res);
         })
         .catch(() => {
@@ -33,12 +51,24 @@ const ViewRecommendationList = () => {
       console.log('sent recommendation list as prop, not retrieving');
       console.log({ recommendations });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  // remove result list when query is removed
-  // out of focus fjerne listen, in focus gå tilbake
+  };
 
   const renderRecommendations = recommendations?.list != null && recommendations.list.length > 0;
+
+
+  const getRecommendationListUsingFunction = () => {
+    console.log('getLocalListWithProviders');
+
+    getListWithProviders(listId)
+      .then((response) => {
+        const data = response.data;
+        console.log('function data ', data);
+        setRecommendations(data);
+      })
+      .catch((err) => {
+        console.error('err', err);
+      });
+  };
 
   return (
     <Container>

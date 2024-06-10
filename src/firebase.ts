@@ -47,3 +47,8 @@ export const getProvidersForCountry = httpsCallable<
   GetProvidersForCountryRequest,
   RecommendationList
 >(functions, 'getProvidersForCountry');
+
+export const getListWithProviders = httpsCallable<string, RecommendationList | null>(
+  functions,
+  'getListWithProviders'
+);
