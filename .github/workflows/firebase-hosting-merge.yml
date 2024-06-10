@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # now install and builds both frontend and serverless functions, but functions are not deployed here
       - run: echo "INSTALLING FOR FRONTEND" && npm ci && cd functions/ && echo "INSTALLING FOR FUNCTIONS" && npm ci && cd ../ && echo "BUILDING FOR FRONTEND" && CI=false npm run build && cd functions/ && echo "BUILDING FOR FUNCTIONS" && npm run build && cd ../ && echo "COMPLETE"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

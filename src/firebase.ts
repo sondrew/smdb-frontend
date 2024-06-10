@@ -21,7 +21,7 @@ const app = initializeApp(firebaseConfig);
 
 const appCheck = initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider('6LcN98ohAAAAAD_7oCIpFmm07Z6eI1zh8L31wbUY'),
-  isTokenAutoRefreshEnabled: true
+  isTokenAutoRefreshEnabled: true,
 });
 
 export const db = getFirestore(app);
