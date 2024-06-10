@@ -18,6 +18,7 @@ import {
 import {
   CountriesWithWatchProvider,
   MediaType,
+  RecommendationList,
   SearchItem,
   WatchProvider,
 } from '../../shared/models';
@@ -26,6 +27,7 @@ import {
   getMediaItemsForList,
   saveWatchProvidersToDb,
   saveRecommendationList,
+  getDbListWithProviders,
 } from './firestoreGateway';
 import { CreateListRequest } from '../../shared/requestModels';
 import { CreateMediaProvidersListEntity } from './entityModels';
@@ -104,6 +106,13 @@ export const getProvidersForCountry = async (
   const watchProviderLogoBaseUrl = 'https://image.tmdb.org/t/p/original/';
 
   return mediaItems;
+};
+
+export const getListWithProviders = async (listId: string): Promise<RecommendationList | null> => {
+  console.log('service getListWithProviders');
+  console.log('\n\n\n===========================================\n\n\n');
+
+  return getDbListWithProviders(listId);
 };
 
 const saveWatchProviders = async (moviesAndShows: MovieAndTVShowDetailsResponse) => {

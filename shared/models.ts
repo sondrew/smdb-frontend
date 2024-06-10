@@ -103,7 +103,9 @@ export type RecommendedMedia = {
   countriesWithProviders: CountriesWithWatchProvider | null;
 };
 
-export type CountriesWithWatchProvider = { [countryCode: string]: CountryWatchProviders } | null;
+export type CountriesWithWatchProvider = {
+  [countryCode: string]: CountryWatchProviders;
+} | null;
 
 export type CountryWatchProviders = {
   link: string | null;

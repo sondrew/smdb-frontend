@@ -1,5 +1,6 @@
 import { CreateMediaProvidersListEntity, CreateRecommendationListEntity } from './entityModels';
 import { MediaIdsOfTypes } from './backendModels';
+import { RecommendationList, RecommendedMedia } from '../../shared/models';
 
 const admin = require('firebase-admin');
 admin.initializeApp({
@@ -67,3 +68,150 @@ export const getMediaItemsForList = async (listId: string): Promise<MediaIdsOfTy
 
   return mediaIdAndMediaType;
 };
+
+export const getDbListWithProviders = async (
+  listId: string
+): Promise<RecommendationList | null> => {
+  //Promise<RecommendationList> => {
+  console.log('getListWithProviders');
+  const recommendationList: RecommendationList | null = await db
+    .collection('recommendationLists')
+    .doc(listId)
+    .get()
+    .then((res: any): RecommendationList | null => {
+      console.log('then()', res);
+      const data = res.data();
+      console.log('data', data);
+
+      if (data === undefined) {
+        console.log('recommendation list does not exist for listId: ', listId);
+        return null;
+      }
+
+      //console.log('data', data);
+      const typeList = {
+        id: listId,
+        listName: data.listName,
+        listDescription: data.listDescription,
+        list: data.list.map((media: RecommendedMedia) => ({
+          id: media.id,
+          listIndex: media.listIndex,
+          userRating: media.userRating,
+          userComment: media.userComment,
+          title: media.title,
+          originalTitle: media.originalTitle,
+          description: media.description,
+          mediaType: media.mediaType,
+          posterPath: getPosterUrl(media.posterPath),
+          imdbPath: media.imdbPath,
+          genres: media.genres,
+        })),
+      } as RecommendationList;
+      console.log('typeList');
+      return typeList;
+    })
+    .catch((err: any) => {
+      console.error('getListWithProviders: Failed retrieving list from db,', err);
+      throw new Error('Failed retrieving list from db');
+    });
+
+  if (recommendationList === null) return null;
+
+  console.log('outside then()');
+  console.log('list', recommendationList);
+
+  const newListWithMediaProvider = await getMediaProviders(recommendationList.list);
+
+  console.log('successfully fetched providers for media items');
+  return {
+    ...recommendationList,
+    list: newListWithMediaProvider.sort(
+      (n1: RecommendedMedia, n2: RecommendedMedia) => n1.listIndex - n2.listIndex
+    ),
+  } as RecommendationList;
+};
+
+const getMediaProviders = async (
+  recommendationList: RecommendedMedia[]
+): Promise<RecommendedMedia[]> => {
+  console.log('getMediaProviders');
+  const movies = recommendationList.filter((item: RecommendedMedia) => item.mediaType === 'movie');
+  const tvShows = recommendationList.filter((item: RecommendedMedia) => item.mediaType === 'tv');
+
+  const movieListWithProviders = await fetchProviders(movies, 'movieProviders');
+  const tvListWithProvider = await fetchProviders(tvShows, 'tvProviders');
+
+  return movieListWithProviders.concat(tvListWithProvider);
+};
+
+const fetchProviders = async (
+  mediaItems: RecommendedMedia[],
+  documentPath: 'movieProviders' | 'tvProviders'
+): Promise<RecommendedMedia[]> => {
+  console.log('fetchProviders for ', documentPath);
+  if (mediaItems.length === 0) {
+    console.log(`No ${documentPath} ids provided, not fetching providers`);
+    return [];
+  }
+
+  const mediaProviders = await Promise.all(
+    mediaItems.map(async (item: RecommendedMedia): Promise<RecommendedMedia> => {
+      return await db
+        .collection(documentPath)
+        .doc(item.id.toString())
+        .get()
+        .then((res: any) => {
+          console.log(`testPromise then(${item.id})`);
+          const data = res.data();
+          console.log('data fetched from db', data);
+
+          if (data === undefined) {
+            console.log('media providers does not exist for listId: ', item.id);
+            return item;
+          }
+
+          const providerData: CreateMediaProvidersListEntity = {
+            id: data.id,
+            lastUpdated: data.lastUpdated,
+            countries: data.countries,
+          };
+          //console.log('providerData', providerData);
+
+          const mediaWithProvider = {
+            ...item,
+            countriesWithProviders: providerData.countries,
+          } as RecommendedMedia;
+          console.log('successfully mapped provider to media item');
+          //console.log('mediaWithProvider', mediaWithProvider);
+
+          return mediaWithProvider;
+        })
+        .catch((err: any) => {
+          console.error(`Failed fetching provider for ${item.id},`, err);
+          throw new Error(`Failed fetching provider for ${item.id}`);
+        });
+    })
+  )
+    .then((items: RecommendedMedia[]) => {
+      console.log('THEN ALL');
+      console.log('Requested items: ', items.length);
+      return items;
+    })
+    .catch((err: any) => {
+      console.error('Failed fetching providers for media items,', err);
+      throw new Error('Failed fetching providers for media items');
+    });
+  console.log('testPromise');
+  console.log(mediaProviders);
+
+  return mediaProviders;
+};
+
+const getPosterUrl = (path: string | null): string => {
+  if (path !== null) return `${POSTER_BASE_URL}${path}`;
+  else return FALLBACK_POST_URL;
+};
+
+const FALLBACK_POST_URL =
+  'https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg';
+const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
