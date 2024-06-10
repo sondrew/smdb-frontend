@@ -1,6 +1,11 @@
 import * as functions from 'firebase-functions';
-import { createRecommendationList, getProvidersForCountry, searchMovieOrTV } from './service';
-import { SearchItem } from '../../shared/models';
+import {
+  createRecommendationList,
+  getListWithProviders,
+  getProvidersForCountry,
+  searchMovieOrTV,
+} from './service';
+import { RecommendationList, SearchItem } from '../../shared/models';
 import { CallableContext } from 'firebase-functions/lib/common/providers/https';
 import { CreateListRequest, GetProvidersForCountryRequest } from '../../shared/requestModels';
 // All available logging functions
@@ -42,6 +47,19 @@ exports.getProvidersForCountry = functions
     }
   );
 
+exports.getListWithProviders = functions
+  .region('europe-west1')
+  .https.onCall(
+    async (listId: string, context: CallableContext): Promise<RecommendationList | null> => {
+      debug('getListWithProviders', listId);
+      returnErrorIfNotVerified(context);
+
+      console.log('get recommendation list with providers from db ', listId);
+
+      return await getListWithProviders(listId);
+    }
+  );
+
 const returnErrorIfNotVerified = (context: CallableContext) => {
   if (context.app == undefined) {
     warn('Unverified request to a callable function received', context);
@@ -49,7 +67,7 @@ const returnErrorIfNotVerified = (context: CallableContext) => {
     console.log(context);
     throw new functions.https.HttpsError(
       'failed-precondition',
-      'The function must be called from an App Check verified app.'
+      'The function must be called from an App Check verified app'
     );
   }
 };
