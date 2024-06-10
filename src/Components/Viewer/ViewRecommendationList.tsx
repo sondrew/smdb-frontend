@@ -8,23 +8,22 @@ import { getListWithProviders, getProvidersForCountry } from '../../firebase';
 import { GetProvidersForCountryRequest } from '../../../shared/requestModels';
 
 const ViewRecommendationList = () => {
-  const { state } = useLocation(); // get recommendation list right after creation
+  //const { state } = useLocation(); // get recommendation list right after creation // TODO: change this to fetch anyhow, as we want providers as well
   let { listId } = useParams(); // get list id from url path
   console.log('listId', listId);
 
-  const [recommendations, setRecommendations] = useState<RecommendationList | null>(
-    state as RecommendationList
-  ); // TODO: Differentiate between loading list and it not existing
+  const [recommendations, setRecommendations] = useState<
+    RecommendationList | 'loading' | 'missing' | null
+  >(null);
   useEffect(() => {
-    console.log('USE EFFECT');
+    console.log('Checking if list should be fetched. current state:', recommendations);
     if (recommendations == null && !!listId) {
+      setRecommendations('loading');
       //fetchRecommendationListUsingFirestoreClient();
       getRecommendationListUsingFunction();
     } else {
-      console.log('sent recommendation list as prop, not retrieving');
-      console.log({ recommendations });
+      console.log('Recommendation list is missing or already loading');
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // remove result list when query is removed
@@ -53,7 +52,8 @@ const ViewRecommendationList = () => {
     }
   };
 
-  const renderRecommendations = recommendations?.list != null && recommendations.list.length > 0;
+  const renderRecommendations =
+    recommendations !== null && recommendations !== 'loading' && recommendations !== 'missing';
 
 
   const getRecommendationListUsingFunction = () => {
@@ -61,7 +61,7 @@ const ViewRecommendationList = () => {
 
     getListWithProviders(listId)
       .then((response) => {
-        const data = response.data;
+        const data = response.data ?? 'missing';
         console.log('function data ', data);
         setRecommendations(data);
       })
@@ -75,9 +75,10 @@ const ViewRecommendationList = () => {
       <Heading as="h1" size="md" pt={2} mb={8} color="grey">
         Recommender3000
       </Heading>
-      {recommendations === null && (
-        <h2>There's no recommendation list here! Go to our front page</h2>
-      )}
+      {/*<Button onClick={getProviders}>GetProvidersForCountry</Button>
+        <Button onClick={getRecommendationListUsingFunction}>GetLocalListWithProviders</Button>*/}
+      {recommendations === 'loading' && <h2>Loading recommendation list!</h2>}
+      {recommendations === 'missing' && <h2>There is no recommendation list at this link!</h2>}
       {renderRecommendations && (
         <Box>
           <Heading as="h2" size="lg" mb={3} color="white">
