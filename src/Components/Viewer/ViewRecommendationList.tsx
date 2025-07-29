@@ -66,6 +66,20 @@ const ViewRecommendationList = () => {
   const renderRecommendations =
     recommendations !== null && recommendations !== 'loading' && recommendations !== 'missing';
 
+  const getProviders = () => {
+    console.log('getProviders');
+    const request: GetProvidersForCountryRequest = {
+      listId: listId ?? '',
+      countryCode: 'NO',
+    };
+    getProvidersForCountry(request)
+      .then((result) => {
+        console.log('result', result);
+      })
+      .catch((err) => {
+        console.error('err', err);
+      });
+  };
 
   const getRecommendationListUsingFunction = () => {
     console.log('getLocalListWithProviders');
@@ -102,6 +116,8 @@ const ViewRecommendationList = () => {
               "{recommendations.listDescription}"
             </Text>
           )}
+          {/* Add showing with streaming providers in Norway? (if country code is there)*/}
+          {!!countryCode && <Box>Showing movie/tv show providers for ${countryCode}</Box>}
           <Box mt={8}>
             {recommendations.list.map((item, index) => (
               <ViewRecommendationListItem key={item.id} item={item} countryCode={countryCode} />

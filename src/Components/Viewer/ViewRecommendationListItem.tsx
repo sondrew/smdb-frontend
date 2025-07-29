@@ -1,7 +1,6 @@
-import { RecommendedMedia, WatchProvider } from '../../../shared/models';
+import { MediaType, RecommendedMedia, WatchProvider } from '../../shared/models';
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useState } from 'react';
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 
 const ViewRecommendationListItem = ({
   item,
@@ -75,7 +74,7 @@ const ViewRecommendationListItem = ({
               {showDescription && <Text color="lightgray">{item.description}</Text>}
             </>
           )}
-          {!!countryProviders && itemHasProviders && (
+          {itemHasProviders && (
             <Box marginTop="15px">
               <Box>
                 {countryProviders.flatrate.length > 0 && (
@@ -102,6 +101,12 @@ const ViewRecommendationListItem = ({
                 )}
               </Box>
             </Box>
+          )}
+          {!itemHasProviders && (
+            <Text color="lightgray" fontSize="sm">
+              No providers for this ${item.mediaType === MediaType.MOVIE ? 'movie' : 'tv show'} in
+              your country
+            </Text>
           )}
         </Box>
       </Flex>
