@@ -1,4 +1,4 @@
-import { CreateMediaProvidersListEntity } from '../functions/src/entityModels';
+import { CreateMediaProvidersListEntity } from '../../functions/src/entityModels';
 
 export enum MediaType {
   TV = 'tv',

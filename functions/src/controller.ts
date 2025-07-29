@@ -5,9 +5,9 @@ import {
   getProvidersForCountry,
   searchMovieOrTV,
 } from './service';
-import { RecommendationList, SearchItem } from '../../shared/models';
+import { RecommendationList, SearchItem } from '../../src/shared/models';
 import { CallableContext } from 'firebase-functions/lib/common/providers/https';
-import { CreateListRequest, GetProvidersForCountryRequest } from '../../shared/requestModels';
+import { CreateListRequest, GetProvidersForCountryRequest } from '../../src/shared/requestModels';
 // All available logging functions
 import { log, info, debug, warn, error, write } from 'firebase-functions/logger';
 

@@ -1,4 +1,4 @@
-import { MediaType } from '../../shared/models';
+import { MediaType } from '../shared/models';
 
 export interface RecommendedItem {
   id: number;

@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { SearchItem } from '../../shared/models';
+import { SearchItem } from '../shared/models';
 
 export const SearchList = atom({
   key: 'recommendationList',

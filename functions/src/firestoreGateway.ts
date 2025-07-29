@@ -1,6 +1,6 @@
 import { CreateMediaProvidersListEntity, CreateRecommendationListEntity } from './entityModels';
 import { MediaIdsOfTypes } from './backendModels';
-import { RecommendationList, RecommendedMedia } from '../../shared/models';
+import { RecommendationList, RecommendedMedia } from '../../src/shared/models';
 
 const admin = require('firebase-admin');
 admin.initializeApp({

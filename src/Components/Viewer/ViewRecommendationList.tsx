@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { Box, Container, Heading, Text } from '@chakra-ui/react';
 import { getRecommendationList } from '../../firestore';
 import ViewRecommendationListItem from './ViewRecommendationListItem';
-import { RecommendationList } from '../../../shared/models';
+import { RecommendationList } from '../../shared/models';
 import { getListWithProviders, getProvidersForCountry } from '../../firebase';
-import { GetProvidersForCountryRequest } from '../../../shared/requestModels';
+import { GetProvidersForCountryRequest } from '../../shared/requestModels';
 import { getClientCountryCode } from '../../httpClient';
 import { countries } from '../../countries';
 

@@ -1,6 +1,6 @@
 import { db } from './firebase';
 import { collection, doc, documentId, getDoc, getDocs, query, where } from 'firebase/firestore';
-import { RecommendationList, RecommendedMedia } from '../shared/models';
+import { RecommendationList, RecommendedMedia } from './shared/models';
 import {
   CreateMediaProvidersListEntity,
   CreateRecommendationListEntity,

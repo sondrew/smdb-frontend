@@ -18,7 +18,7 @@ import { SearchList } from '../State/Atoms';
 import { Link } from 'react-router-dom';
 import useKeyPress from '../Hooks/useKeyPress';
 import { searchMoviesAndTV } from '../firebase';
-import { SearchItem } from '../../shared/models';
+import { SearchItem } from '../shared/models';
 
 const WelcomePage = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');

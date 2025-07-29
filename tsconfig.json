@@ -22,12 +22,12 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["src/shared/*"]
     }
   },
   "include": [
     "src",
-    "shared"
+    "src/shared"
   ],
   "exclude": [
     "functions"

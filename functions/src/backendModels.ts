@@ -5,13 +5,13 @@ import {
   RecommendationList,
   RecommendedMedia,
   WatchProvider,
-} from '../../shared/models';
+} from '../../src/shared/models';
 import {
   CreateMediaProvidersListEntity,
   CreateRecommendationListEntity,
   RecommendedMediaEntity,
 } from './entityModels';
-import { CreateListRequest } from '../../shared/requestModels';
+import { CreateListRequest } from '../../src/shared/requestModels';
 import { Timestamp } from 'firebase-admin/firestore';
 
 export enum ResponseStatus {

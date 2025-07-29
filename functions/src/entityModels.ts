@@ -1,8 +1,7 @@
 import {
   CountriesWithWatchProvider,
-  RecommendationList,
   RecommendedMedia,
-} from '../../shared/models';
+} from '../../src/shared/models';
 import { Timestamp } from 'firebase-admin/firestore';
 
 export type CreateRecommendationListEntity = {

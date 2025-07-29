@@ -4,10 +4,10 @@ import { SearchList } from '../../State/Atoms';
 import { Button, Container, Flex, Heading, Input } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import EditorList from './EditorList';
-import { RecommendationList, SearchItem } from '../../../shared/models';
+import { RecommendationList, SearchItem } from '../../shared/models';
 import { RecommendedItem } from '../../Models/FrontendModels';
 import { createRecommendationList } from '../../firebase';
-import { CreateListRequest } from '../../../shared/requestModels';
+import { CreateListRequest } from '../../shared/requestModels';
 
 const RecommendationEditor = () => {
   const navigate = useNavigate();

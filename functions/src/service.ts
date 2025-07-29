@@ -21,7 +21,7 @@ import {
   RecommendationList,
   SearchItem,
   WatchProvider,
-} from '../../shared/models';
+} from '../../src/shared/models';
 import { getMovieAndTVShowDetails, getMultipleMoviesDetails, searchMulti } from './tmdbGateway';
 import {
   getMediaItemsForList,
@@ -29,7 +29,7 @@ import {
   saveRecommendationList,
   getDbListWithProviders,
 } from './firestoreGateway';
-import { CreateListRequest } from '../../shared/requestModels';
+import { CreateListRequest } from '../../src/shared/requestModels';
 import { CreateMediaProvidersListEntity } from './entityModels';
 import { Timestamp } from 'firebase-admin/firestore';
 

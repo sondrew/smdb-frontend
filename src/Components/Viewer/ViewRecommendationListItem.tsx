@@ -1,4 +1,4 @@
-import { MediaType, RecommendedMedia, WatchProvider } from '../../../shared/models';
+import { MediaType, RecommendedMedia, WatchProvider } from '../../shared/models';
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Country } from '../../countries';
@@ -44,11 +44,11 @@ const ViewRecommendationListItem = ({
     <Box key={item.id} m={1} border="1px solid yellow">
       {' '}
       {/* endre på dette, test ut neumorphism til css*/}
-      <Flex flexDirection="row">
-        <Flex flexDirection="column" mx={3} alignItems="center" justifyContent="center">
+      <Flex direction="row">
+        <Flex direction="column" mx={3} alignItems="center" justifyContent="center">
           <Text fontSize="4xl">{item.listIndex + 1}</Text>
           <Image
-            objectFit={'fill'}
+            objectFit="fill"
             maxW={60}
             maxH={100}
             src={item.posterPath ?? ''}
@@ -84,7 +84,7 @@ const ViewRecommendationListItem = ({
             <Box marginTop="15px">
               <Box>
                 {countryProviders.flatrate.length > 0 && (
-                  <Flex marginTop="4px" flexDirection="row" height="30px" alignItems="center">
+                  <Flex marginTop="4px" direction="row" height="30px" alignItems="center">
                     <div>Streaming:</div>
                     {getListOfProviders(countryProviders.flatrate)}
                   </Flex>
@@ -92,7 +92,7 @@ const ViewRecommendationListItem = ({
               </Box>
               <Box>
                 {countryProviders.rent.length > 0 && (
-                  <Flex marginTop="4px" flexDirection="row" height="30px" alignItems="center">
+                  <Flex marginTop="4px" direction="row" height="30px" alignItems="center">
                     <div>Rent:</div>
                     {getListOfProviders(countryProviders.rent)}
                   </Flex>
@@ -100,7 +100,7 @@ const ViewRecommendationListItem = ({
               </Box>
               <Box>
                 {countryProviders.buy.length > 0 && (
-                  <Flex marginTop="4px" flexDirection="row" height="30px" alignItems="center">
+                  <Flex marginTop="4px" direction="row" height="30px" alignItems="center">
                     <div>Buy:</div>
                     {getListOfProviders(countryProviders.buy)}
                   </Flex>
