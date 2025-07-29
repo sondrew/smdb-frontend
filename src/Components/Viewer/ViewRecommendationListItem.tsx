@@ -1,13 +1,16 @@
 import { MediaType, RecommendedMedia, WatchProvider } from '../../shared/models';
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useState } from 'react';
+import { Country } from '../../countries';
 
 const ViewRecommendationListItem = ({
   item,
   countryCode,
+  clientCountry,
 }: {
   item: RecommendedMedia;
   countryCode: string | null | undefined;
+  clientCountry: Country | null,
 }) => {
   const [showDescription, setShowDescription] = useState<boolean>(false);
 
@@ -33,6 +36,9 @@ const ViewRecommendationListItem = ({
       />
     ));
   };
+
+  //const alternativeStreamingProviders = !!countryCode && item?.countriesWithProviders && clientCountry ?
+  //  clientCountry.neighbouringCountryCodes.map(neigbourCountryCode => item.countriesWithProviders ? item.countriesWithProviders[neigbourCountryCode].flatrate : []);
 
   return (
     <Box key={item.id} m={1} border="1px solid yellow">

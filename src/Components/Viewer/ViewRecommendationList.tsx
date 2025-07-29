@@ -7,6 +7,7 @@ import { RecommendationList } from '../../../shared/models';
 import { getListWithProviders, getProvidersForCountry } from '../../firebase';
 import { GetProvidersForCountryRequest } from '../../../shared/requestModels';
 import { getClientCountryCode } from '../../httpClient';
+import { countries } from '../../countries';
 
 const ViewRecommendationList = () => {
   //const { state } = useLocation(); // get recommendation list right after creation // TODO: change this to fetch anyhow, as we want providers as well
@@ -97,6 +98,8 @@ const ViewRecommendationList = () => {
 
   // TODO: Write function to get flatrate alternatives in other countries, preferably with same providers as that country
 
+  const clientCountry = countryCode ? countries[countryCode] ?? null : null;
+
   return (
     <Container>
       <Heading as="h1" size="md" pt={2} mb={8} color="grey">
@@ -116,11 +119,10 @@ const ViewRecommendationList = () => {
               "{recommendations.listDescription}"
             </Text>
           )}
-          {/* Add showing with streaming providers in Norway? (if country code is there)*/}
-          {!!countryCode && <Box>Showing movie/tv show providers for ${countryCode}</Box>}
+          {!!countryCode && <Box>Showing movie/tv show providers for {clientCountry?.localCountryName} {clientCountry?.flagEmoji}</Box>}
           <Box mt={8}>
             {recommendations.list.map((item, index) => (
-              <ViewRecommendationListItem key={item.id} item={item} countryCode={countryCode} />
+              <ViewRecommendationListItem key={item.id} item={item} countryCode={countryCode} clientCountry={clientCountry} />
             ))}
           </Box>
         </Box>
