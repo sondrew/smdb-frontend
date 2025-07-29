@@ -55,6 +55,8 @@ const WelcomePage = () => {
     if (debouncedSearchQuery.length > 2) {
       searchMoviesAndTV(debouncedSearchQuery)
         .then((data) => {
+          console.log('search');
+          console.log(data.data);
           setSearchResult(data.data);
           setSelectedSearchItem(null);
         })

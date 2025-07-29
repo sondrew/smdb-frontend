@@ -37,6 +37,8 @@ const ViewRecommendationListItem = ({
 
   return (
     <Box key={item.id} m={1} border="1px solid yellow">
+      {' '}
+      {/* endre på dette, test ut neumorphism til css*/}
       <Flex flexDirection="row">
         <Flex flexDirection="column" mx={3} alignItems="center" justifyContent="center">
           <Text fontSize="4xl">{item.listIndex + 1}</Text>

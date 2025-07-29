@@ -18,6 +18,9 @@ exports.searchMoviesAndTV = functions
     debug('searchMoviesAndTV', query);
     returnErrorIfNotVerified(context);
 
+    // sanitize input? ev. html encode it
+
+    console.log('search movie and tv');
     return await searchMovieOrTV(query, process.env.TMDB_API_KEY ?? '');
   });
 
@@ -27,6 +30,7 @@ exports.createRecommendationList = functions
   .https.onCall(async (list: CreateListRequest, context: CallableContext) => {
     returnErrorIfNotVerified(context);
 
+    console.log('create list');
     return await createRecommendationList(list, process.env.TMDB_API_KEY ?? '');
   });
 
@@ -38,6 +42,7 @@ exports.getProvidersForCountry = functions
       returnErrorIfNotVerified(context);
 
       console.log('request', request);
+      console.log('get providers');
 
       return await getProvidersForCountry(
         request.listId,
@@ -47,6 +52,7 @@ exports.getProvidersForCountry = functions
     }
   );
 
+// could consider rewriting this/adding another that takes in country code and outputs prefered default options and flatrate alternatives in nearby countries
 exports.getListWithProviders = functions
   .region('europe-west1')
   .https.onCall(

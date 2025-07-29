@@ -69,6 +69,8 @@ export const getMediaItemsForList = async (listId: string): Promise<MediaIdsOfTy
   return mediaIdAndMediaType;
 };
 
+// TODO: Rewrite provider logic to use one table for both movies and tv shows for faster/easier querying on the same table
+
 export const getDbListWithProviders = async (
   listId: string
 ): Promise<RecommendationList | null> => {

@@ -81,10 +81,12 @@ const ViewRecommendationList = () => {
       });
   };
 
+  // TODO: Write function to get flatrate alternatives in other countries, preferably with same providers as that country
+
   return (
     <Container>
       <Heading as="h1" size="md" pt={2} mb={8} color="grey">
-        Recommender3000
+        Recommended.watch
       </Heading>
       {/*<Button onClick={getProviders}>GetProvidersForCountry</Button>
         <Button onClick={getRecommendationListUsingFunction}>GetLocalListWithProviders</Button>*/}

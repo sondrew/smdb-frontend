@@ -1,14 +1,12 @@
-import { initializeApp } from 'firebase/app';
+import { FirebaseOptions, initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { connectFunctionsEmulator } from 'firebase/functions';
 import { RecommendationList, SearchItem } from '../shared/models';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { CreateListRequest, GetProvidersForCountryRequest } from '../shared/requestModels';
-//import { getStorage, ref } from "firebase/storage";
-//import { getAuth } from "firebase/auth";
 
-const firebaseConfig = {
+const firebaseConfig: FirebaseOptions = {
   apiKey: 'AIzaSyBNukhn5Ztbe2uFhvh3VYAdTiX73Bts1iU',
   authDomain: 'recommender3000.firebaseapp.com',
   projectId: 'recommender3000',

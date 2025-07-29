@@ -15,6 +15,7 @@ import {
 const baseUrl = 'https://api.themoviedb.org/3';
 
 export const searchMulti = (
+  // TODO: Limit to 10 results or less? Seems excessive to return 20 results
   query: string,
   apiKey: string
 ): Promise<ApiResponse<TMDbMultiSearchDto>> => {
@@ -149,6 +150,8 @@ export const getMovieDetails = (
   const requestUrl = `${baseUrl}/movie/${tmdbId}?api_key=${apiKey}${
     withProviders ? '&append_to_response=watch/providers,external_id' : ''
   }`;
+
+  console.log('requestUrl', requestUrl);
 
   return axios
     .get(requestUrl)

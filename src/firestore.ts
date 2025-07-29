@@ -30,7 +30,10 @@ export const getRecommendationList = async (listId: string): Promise<Recommendat
         imdbPath: media.imdbPath,
         genres: media.genres,
       }))
-      .sort((n1: RecommendedMedia, n2: RecommendedMedia) => n1.listIndex - n2.listIndex);
+      .sort((n1: RecommendedMedia, n2: RecommendedMedia) => n1.listIndex - n2.listIndex); // doesn't quite work?
+
+    console.log('mediaList');
+    console.log(mediaList);
 
     const movieIds = mediaList
       .filter((item) => item.mediaType === 'movie')
@@ -42,22 +45,29 @@ export const getRecommendationList = async (listId: string): Promise<Recommendat
       .map((item) => item.id.toString());
     console.log('TvShowIds: ', tvShowIds);
 
+    //console.log('movie ids: ', movieIds);
+    //console.log('tv show ids: ', tvShowIds);
     const movieProvider = await fetchProviders(movieIds, 'movieProviders');
     console.log('movieProviders');
     console.log(movieProvider);
-    const tvShowProvider = await fetchProviders(movieIds, 'tvShowProviders');
+    const tvShowProvider = await fetchProviders(movieIds, 'tvProviders'); // tvProviders??
     console.log('tvShowProviders');
     console.log(tvShowProvider);
 
     const newList: RecommendedMedia[] = mediaList.map((item) => {
       let provider: CreateMediaProvidersListEntity | null;
+      console.log('Looping media items to add providers', item);
 
       if (item.mediaType === 'movie') {
+        console.log('trying to find provider for movie');
         provider =
-          movieProvider.find((providerItem) => item.id.toString() === providerItem.id) ?? null;
+          movieProvider.find((providerItem) => item.id.toString() == providerItem.id) ?? null;
+        console.log('provider: ', provider);
       } else {
+        console.log('trying to find provider for tv show');
         provider =
-          movieProvider.find((providerItem) => item.id.toString() === providerItem.id) ?? null;
+          movieProvider.find((providerItem) => item.id.toString() == providerItem.id) ?? null;
+        console.log('provider: ', provider);
       }
 
       console.log('PROVIDER FOR MEDIA');
@@ -95,18 +105,24 @@ const getPosterUrl = (path: string | null): string => {
 
 const fetchProviders = async (
   ids: string[],
-  documentPath: 'movieProviders' | 'tvShowProviders'
+  documentPath: 'movieProviders' | 'tvProviders'
 ): Promise<CreateMediaProvidersListEntity[]> => {
-  console.log('fetchProviders');
+  console.log('fetchProviders for ', ids);
+  if (ids.length === 0) {
+    console.log(`No ${documentPath} ids provided, not fetching providers`);
+    return [];
+  }
+
+  const chunkedIds = chunk(ids, 10);
 
   // use lodash _.chunk, for example
   const result = await Promise.all(
-    chunk(ids, 10).map(async (chunkIds) => {
+    chunkedIds.map(async (chunkIds: string[]): Promise<CreateMediaProvidersListEntity[]> => {
       console.log('CHUNK', chunkIds);
       const mediaProviders = await getDocs(
         query(collection(db, documentPath), where(documentId(), 'in', chunkIds))
       );
-      console.log('mediaProviders');
+      console.log('query done');
       return mediaProviders.docs
         .filter((doc) => doc.exists())
         .map((doc) => {
