@@ -3,11 +3,24 @@ import { MediaIdsOfTypes } from './backendModels';
 import { RecommendationList, RecommendedMedia } from '../../src/shared/models';
 
 const admin = require('firebase-admin');
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-});
+
+// Initialize Firebase Admin only if not already initialized
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+    projectId: 'recommender3000', // Your Firebase project ID
+  });
+}
 
 const db = admin.firestore();
+
+// Configure Firestore to use emulator when running locally
+if (process.env.FUNCTIONS_EMULATOR) {
+  db.settings({
+    host: "localhost:4242",
+    ssl: false,
+  });
+}
 
 export const saveRecommendationList = async (
   list: CreateRecommendationListEntity
