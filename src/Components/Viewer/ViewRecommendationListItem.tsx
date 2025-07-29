@@ -1,4 +1,4 @@
-import { MediaType, RecommendedMedia, WatchProvider } from '../../shared/models';
+import { MediaType, RecommendedMedia, WatchProvider } from '../../../shared/models';
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Country } from '../../countries';
