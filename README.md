@@ -39,6 +39,11 @@ Typescript, React, Firebase (firestore, hosting, callable functions, secrets), C
 - Consider don't showing composite providers that offer other providers as part of their service? E.g. Strim might show as provider for HBO shows
 - Automatically or manually let user set tags genre tags or similar for their lists (either deduce by most reoccuring genres or let user decide by suggestions)
 - Fix numbering of recommendation list (displays in wrong order after creating list)
+- Sometimes the request to get client country is blocked (probably anti-tracking extensions?), should be fixed 
+- Add loader when creating list and deactivate button
+- When using keyboard to navigate search items, keep focus on selected element even if adding another character?
+- Make so that up/down keyboard presses doesn't jump in the search bar?
+- Add number of seasons/episodes to TV shows overview?
 
 ## Also store?
 - Original language/spoken language?
